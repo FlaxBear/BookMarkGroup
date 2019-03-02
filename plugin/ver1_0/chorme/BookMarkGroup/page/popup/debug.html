@@ -1,0 +1,100 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/mybookmark.css"/>
+		<meta http-equiv="content-type" charset="utf-8">
+		<script type="text/javascript" src="../../js/mybookmark.js"></script>
+		<script type="text/javascript">
+			function alert_test(mode) {
+				var result = '';
+				switch(mode) {
+					case '1':
+						result = '同期を開始';
+					break;
+					case '2':
+						result = 'グループ作成';
+					break;
+					case '3':
+						result = 'コミット';
+					break;
+					case '4':
+						result = '更新';
+					break;
+					case '5':
+						result = '詳細設定';
+					break;
+					default:
+						result = 'それ以外';
+					break;
+				}
+				var debug_result = document.getElementById("debug_result");
+				debug_result.innerHTML = result;
+				return;
+			}
+		</script>
+	</head>
+	<body>
+		<div id="title" class="title">
+			<h1>MyBookMark</h1>
+		</div>
+		
+		<div id="debug_result"></div>
+		<div id="main_content">
+			<form name="main">
+				<table>
+					<tr>
+						<td colspan="2"><button name="button_start_sync" onclick="alert_test('1');" class="button_all">同期を開始</button></td>
+					</tr>
+					
+					<tr>
+						<td><input type="text" name="make_bookmark_group" class="text"></td>
+						<td><button name="button_make_book_mark_group" onclick="button_processing('2');" class="button_half">グループ作成</button></td>
+					</tr>
+
+					<tr>
+						<td>
+							<select name="commit_bookmark_group" class="select">
+								<option value="1">グループ1</option>
+								<option value="2">グループ2</option>
+								<option value="3">グループ3</option>
+							</select>
+						</td>
+						<td><button name="button_make_book_mark_group" onclick="alert_test('3');" class="button_half">コミット</button></td>
+					</tr>
+
+					<tr>
+						<td>
+							<select name="update_bookmark_gropu" class="select">
+								<option value="1">グループ1</option>
+								<option value="2">グループ2</option>
+								<option value="3">グループ3</option>
+							</select>
+						</td>
+						<td><button name="button_update_make_book_mark_group" onclick="alert_test('4');" class="button_half">更新</button></td>
+					</tr>
+
+					<tr>
+						<td>
+							<select name="remove_bookmark_group" class="select">
+								<option value="1">グループ1</option>
+								<option value="2">グループ2</option>
+								<option value="3">グループ3</option>
+							</select>
+						</td>
+						<td><button name="button_setting_bookmark_group" onclick="alert_test('5');" class="button_half">詳細設定</button></td>
+					</tr>
+
+					<tr>
+						<td>
+							<select name="setting_bookmark_group" class="select">
+								<option value="1">グループ1</option>
+								<option value="2">グループ2</option>
+								<option value="3">グループ3</option>
+							</select>
+						</td>
+						<td><button name="button_setting_bookmark_group" onclick="alert_test('6');" class="button_half">削除</button></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</body>
+</html>
