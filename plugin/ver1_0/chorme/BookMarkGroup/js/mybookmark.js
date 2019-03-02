@@ -67,21 +67,21 @@ function loadLocalStorage()
 // Input: None
 // Output: None
 function createGroup() {
-	// make_bookmark_groupのテキストボックスの中身を見て、空でなければ作成を行う
+	// Look inside the text box of make_bookmark_group and make it if it is not empty
 	if(document.main.make_bookmark_group.value != '') {
 		chrome.bookmarks.getChildren('1', callBack_createGroup);
 	} else {
-		// エラーメッセージを表示（未作成）
+		// Show Error Message
 	}
 	return;
 }
 
 // 関数: callBack_reateGroup
-// 説明: ブックマークの一覧を取得し、MyBookMarkフォルダーがなければ作成し、グループフォルダーの作成を行う
-// 入力: BookmarkTreeNode型(リスト型) bookmarkItems ブックマークに入っている各フォルダーの情報リスト(コールバック関数の呼び出し時取得)
-// 出力: なし
+// 説明: Obtain a list of bookmarks, create a BookMarkGroup folder, create it, and create a group folder
+// 入力: [BookmarkTreeNode][List]: bookmarkItems Information list of each folder in bookmark
+// 出力: None
 function callBack_createGroup(bookmarkItems) {
-	// mybookmarkフォルダーを新規で作成するかの判定用
+	// For judging whether to create a new BookMarkGroup folder
 	var folder_flag = false;
 
 	for(item of bookmarkItems) 
@@ -89,7 +89,7 @@ function callBack_createGroup(bookmarkItems) {
 		if(item.title == 'MyBookMark' && item.url == undefined) 
 		{
 			folder_flag = true;
-			//グループファイルを作成する
+			// Create 
 			var group_folder_title = document.main.make_bookmark_group.value;
 			var mybookmark = createCreateDetailsObject(item.id, 0, group_folder_title, null);
 			chrome.bookmarks.create(mybookmark, callBack_pass);
@@ -97,8 +97,8 @@ function callBack_createGroup(bookmarkItems) {
 	}
 	if(folder_flag == false) 
 	{
-		// 新規でMyBookMarkフォルダーを作成を行い、グループファイルを作成する
-		var mybookmark = createCreateDetailsObject('1', 0, 'MyBookMark', null);
+		// 新規でBookMarkGroupフォルダーを作成を行い、グループファイルを作成する
+		var mybookmark = createCreateDetailsObject('1', 0, 'BookMarkGroup', null);
 		chrome.bookmarks.create(mybookmark, callBack_pass);
 		// 回帰的に再び検索を行い、グループフォルダーを作成される
 		chrome.bookmarks.getChildren('1', callBack_reateGroup);

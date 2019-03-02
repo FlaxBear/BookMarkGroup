@@ -21,8 +21,6 @@ you can send a URL by e-mail or share it without showing the screen by using Web
 
 ## Licence
 
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
-
 ## Authors
 [FlaxBear](https://github.com/FlaxBear)
-[FlaxBear]E-mail(flaxbear.github@gmail.com)
+E-mail:flaxbear.github@gmail.com
