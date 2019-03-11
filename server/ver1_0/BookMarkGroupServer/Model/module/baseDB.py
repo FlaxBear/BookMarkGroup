@@ -3,7 +3,7 @@
 import mysql.connector
 import datetime
 
-class Base_db:
+class BaseDB:
 	"""
 	Connect to the database and create and execute SQL for each processing.
 	

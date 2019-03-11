@@ -35,5 +35,11 @@ class BookMarkGroupController:
 	def settingAddUser(self):
 		pass
 
-	def settginDelUser(self):
+	def settingDelUser(self):
+		pass
+
+	def settingSetAuthority(self):
+		pass
+
+	def settingShowAuthority(self):
 		pass

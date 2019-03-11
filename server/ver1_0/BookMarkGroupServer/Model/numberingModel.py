@@ -1,6 +1,6 @@
-import db
+from module import baseDB
 
-class NumberingModel(db.Base_db):
+class NumberingModel(baseDB.BaseDB):
 	def __init__(self):
 		self.table_info = {
 			"table": "numbering",
