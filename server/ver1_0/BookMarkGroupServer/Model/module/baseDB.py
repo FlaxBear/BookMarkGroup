@@ -183,9 +183,17 @@ class BaseDB:
 		sql_where = ""
 		sql_value = ""
 
+		where_count = 0
+
 		for key in table_info["param"]:
 			if(table_info["param"][key]["primary_key"] == "YES"):
-				sql_where += key + "=%(" + key + ")s"
+				if where_count > 0:
+					sql_where += " AND " + key + "=%(" + key + ")s"
+					where_count += 1
+				else:
+					sql_where += key + "=%(" + key + ")s"
+					where_count += 1
+
 			sql_value += key + ","
 
 		sql_value = sql_value[:-1]
@@ -244,9 +252,16 @@ class BaseDB:
 		sql_where = ""
 		sql_value = ""
 
+		where_count = 0
+
 		for key in table_info["param"]:
 			if(table_info["param"][key]["primary_key"] == "YES"):
-				sql_where += key + "=%(" + key + ")s"
+				if where_count > 0:
+					sql_where += " AND " + key + "=%(" + key + ")s"
+					where_count += 1
+				else:
+					sql_where += key + "=%(" + key + ")s"
+					where_count += 1
 			else:
 				if(table_info["param"][key]["update"] == "YES"):
 					sql_value += key + "=%(" + key + ")s,"
@@ -283,25 +298,16 @@ class BaseDB:
 		sql = "DELETE FROM " + table_info["table"] + " WHERE " + sql_where
 		return sql
 
-	def createRequestSqlValue(self, request):
+	def createRequestSqlValue(self, form, table_info, command):
 		"""
-		Create Sql value dict
-
-		Parameters
-		----------
-		request : dict
-			Post data
-
-		Returns
-		----------
-		return_request : dict
-			Sql value dict
-			
 		"""
-		if request.method == "POST":
-			return_request = request.form
-		else :
-			return_request = {}
+		return_request = {}
+		for param in table_info["param"]:
+			if table_info["param"][param][command] == 'YES':
+				if param in form:
+					return_request[param] = form[param].data
+				else :
+					return_request[param] = ""
 		return return_request
 
 	def create_time(self):

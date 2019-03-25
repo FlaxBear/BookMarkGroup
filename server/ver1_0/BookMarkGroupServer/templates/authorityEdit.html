@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>マスタ用権限編集</title>
+		<script type="text/javascript">
+			function jump_upd(state) {
+				if(state == 'NEW') {
+					obj1 = document.getElementById("select_user_id");
+					obj2 = document.getElementById("select_group_folder_id");
+
+					document.authorityEdit.user_id.value = obj1.value;
+					document.authorityEdit.group_folder_id.value = obj2.value;
+				}
+
+				var authority_state = 0;
+				for(var i = 0, length = document.authorityEdit.check_authority_state.length; i < length; i++) {
+					if(document.authorityEdit.check_authority_state[i].checked == true) {
+						authority_state += 2 ** (4 - i);
+					}
+				}
+				document.authorityEdit.authority_state.value = authority_state
+
+				document.authorityEdit.state.value = state;
+				document.authorityEdit.submit();
+			}
+
+			function back() {
+				document.authorityEdit.action = "/mastar/authorityList";
+				document.authorityEdit.submit();
+			}
+		</script>
+	</head>
+	<body>
+		<form method="POST" name="authorityEdit">
+			{{ form.hidden_tag() }}
+			<input type="hidden" name="authority_state" value="0">
+			{% if form.user_id.data == '0' or form.group_folder_id.data == '0' %}
+				<button type="button" name="createAthority" onclick="jump_upd('NEW');">作成</button>
+			{% else %}
+				<button type="button" name="createAthority" onclick="jump_upd('UPD');">更新</button>
+				<button type="button" name="delateAthority" onclick="jump_upd('DEL');">削除</button>
+			{% endif %}
+				<button type="button" name="backUser" onclick="back();">戻る</button>
+
+			<table>
+				<tbody>
+					<tr>
+						<td>ID:ユーザ</td>
+						<td>
+							{% if form.user_id.data == '0' or form.group_folder_id.data == '0' %}
+								<select id='select_user_id'>
+									{% for value in user_list %}
+										{% if value[0] == data[0] %}
+											<option value="{{value[0]}}" selected>{{value[0]}}:{{value[1]}}</option>
+										{% else %}
+											<option value="{{value[0]}}">{{value[0]}}:{{value[1]}}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							{% else %}
+								{% for value in user_list %}
+									{% if value[0] == data[0] %}
+										{{value[0]}}:{{value[1]}}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+							
+						</td>
+					</tr>
+					<tr>
+						<td>ID:グループフォルダー名</td>
+						<td>
+							{% if form.user_id.data == '0' or form.group_folder_id.data == '0' %}
+								<select id='select_group_folder_id'>
+									{% for value in groupFolder_list %}
+										{% if value[0] == data[2] %}
+											<option value="{{value[0]}}" selected>{{value[0]}}:{{value[1]}}</option>
+										{% else %}
+											<option value="{{value[0]}}">{{value[0]}}:{{value[1]}}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							{% else %}
+								{% for value in groupFolder_list %}
+									{% if value[0] == data[0] %}
+										{{value[0]}}:{{value[1]}}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						</td>
+					</tr>
+					<tr>
+						<td>権限状態</td>
+						<td>
+							<table>
+								<tbody>
+									{% if state_bit[4] == True %}
+										<tr><td>マスター権限</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+									{% else %}
+										<tr><td>マスター権限</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+									{% endif %}
+
+									{% if state_bit[3] == True %}
+										<tr><td>グループユーザの追加、削除</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+									{% else %}
+										<tr><td>グループユーザの追加、削除</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+									{% endif %}
+
+									{% if state_bit[2] == True %}
+										<tr><td>ブックマーク削除</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+									{% else %}
+										<tr><td>ブックマーク削除</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+									{% endif %}
+									
+									{% if state_bit[1] == True %}
+										<tr><td>ブックマーク内容の編集</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+									{% else %}
+										<tr><td>ブックマーク内容の編集</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+									{% endif %}
+
+									{% if state_bit[0] == True %}
+										<tr><td>ブックマーク追加</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+									{% else %}
+										<tr><td>ブックマーク追加</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+									{% endif %}
+
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<tr><td>作成日時</td><td>{{data[3]}}</td></tr>
+					<tr><td>更新日時</td><td>{{data[4]}}</td></tr>
+				</tbody>
+			</table>
+		</form>
+	</body>
+</html>

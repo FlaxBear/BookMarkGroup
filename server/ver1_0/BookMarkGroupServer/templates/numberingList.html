@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ===== 基本設定 ===== -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>管理者用採番一覧</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
+	<script type="text/javascript">
+		function jump_edit(id) {
+			document.numberingList.numbering_id.value = id;
+			document.numberingList.state.value = "SHOW";
+			document.numberingList.action = "/mastar/numberingEdit";
+			document.numberingList.submit();
+		}
+
+		function jump_list(list_id) {
+			var action_url = '';
+
+			switch(list_id) {
+				case '1':
+					action_url = "/mastar/numberingList";
+					break;
+				case '2':
+					action_url = "/mastar/userList";
+					break;
+				case '3':
+					action_url = "/mastar/groupFolderList";
+					break;
+				case '4':
+					action_url = "/mastar/authorityList";
+					break;
+			}
+
+			document.mastarList.state.value = "SHOW";
+			document.mastarList.action=action_url;
+			document.mastarList.submit();
+		}
+	</script>
+	<!-- ===== 基本情報 ===== --> 
+</head>
+<body>
+	<!-- ===== ページ全体 ===== -->
+	<div id="page">
+			<!-- ===== ヘッダー情報 ===== -->
+			<header id="pageHead">
+				<h1 id="siteTitle">管理者用採番一覧</h1>
+				<nav class="globalNavi">
+						<ul>
+							<li><a onclick="jump_list('1');">メニュー</a></li>
+							<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
+							<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
+							<li><a onclick="jump_list('4');">権限一覧</a></li>
+						</ul>
+				</nav>
+			</header>
+			<!-- ===== ヘッダー情報 ===== -->
+	
+		<form method="POST" name="numberingList">
+			{{ form.hidden_tag() }}
+			<button type="button" name="createNumbering" onclick="jump_edit('0');">新規作成</button>
+			<button type="button" name="backMastar" onclick="jump_back();">戻る</button>
+			<table>
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>採番ID</th>
+						<th>カラム名</th>
+						<th>次回値</th>
+						<th>作成日時</th>
+						<th>更新日時</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for value in data %}
+						<tr>
+							<td><button type="button" name="updateNumbering" onclick="jump_edit('{{value[0]}}');">更新</button></td>
+							{% for test in value %}
+								<td>{{test}}</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</form>
+	</body>
+</html>

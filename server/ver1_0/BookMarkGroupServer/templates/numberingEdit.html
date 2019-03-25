@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>マスタ用採番ID編集</title>
+		<script type="text/javascript">
+			function jump_upd(id, state) {
+				document.numberingEdit.numbering_id.value = id;
+				document.numberingEdit.state.value = state;
+				document.numberingEdit.submit();
+			}
+
+			function back() {
+				document.numberingEdit.action = "/mastar/numberingList";
+				document.numberingEdit.submit();
+			}
+		</script>
+	</head>
+	<body>
+		<form method="POST" name="numberingEdit">
+			{{ form.hidden_tag() }}
+			{% if form.numbering_id.data == '0' %}
+				<button type="button" name="createNumbering" onclick="jump_upd('0', 'NEW');">作成</button>
+			{% else %}
+				<button type="button" name="createNumbering" onclick="jump_upd('{{form.numbering_id.data}}', 'UPD');">更新</button>
+				<button type="button" name="delateNumbering" onclick="jump_upd('{{form.numbering_id.data}}', 'DEL');">削除</button>
+			{% endif %}
+				<button type="button" name="backNumbering" onclick="back();">戻る</button>
+
+			<table>
+				<tbody>
+					<tr><td>採番ID</td><td>{{data[0]}}</td></tr>
+					<tr><td>カラム名</td><td><input type="text" name="numbering_name" value="{{data[1]}}"></td></tr>
+					<tr><td>次回値</td><td><input type="text" name="next_value" value="{{data[2]}}"></td></tr>
+					<tr><td>作成日時</td><td>{{data[3]}}</td></tr>
+					<tr><td>更新日時</td><td>{{data[4]}}</td></tr>
+				</tbody>
+			</table>
+		</form>
+	</body>
+</html>

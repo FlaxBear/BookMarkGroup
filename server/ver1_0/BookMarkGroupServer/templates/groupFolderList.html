@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>マスタ用グループフォルダーID一覧</title>
+		<script type="text/javascript">
+			function jump_edit(id) {
+				document.groupFolderList.group_folder_id.value = id;
+				document.groupFolderList.state.value = "SHOW";
+				document.groupFolderList.action  = "/mastar/groupFolderEdit";
+				document.groupFolderList.submit();
+			}
+
+			function jump_back() {
+				document.groupFolderList.action = "/mastar";
+				document.groupFolderList.submit();
+			}
+		</script>
+	</head>
+	<body>
+		<form method="POST" name="groupFolderList">
+		{{ form.hidden_tag() }}
+		<button type="button" name="createGroupFolder" onclick="jump_edit('0');">新規作成</button>
+		<button type="button" name="backMastar" onclick="jump_back();">戻る</button>
+		<table>
+			<thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th>グループフォルダーID</th>
+					<th>グループフォルダー名</th>
+					<th>グループフォルダーバージョン</th>
+					<th>JSONフォルダーパス</th>
+					<th>グループフォルダーメモ</th>
+					<th>作成日時</th>
+					<th>更新日時</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for value in data %}
+					<tr>
+						<td><button type="button" name="updateGroupFolder" onclick="jump_edit('{{value[0]}}');">更新</button></td>
+						{% for test in value %}
+							<td>{{test}}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</body>
+</html>

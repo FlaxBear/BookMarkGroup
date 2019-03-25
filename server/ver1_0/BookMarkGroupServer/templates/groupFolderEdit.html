@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>マスタ用グループフォルダーID編集</title>
+		<script type="text/javascript">
+			function jump_upd(id, state) {
+				document.groupFolderEdit.group_folder_id.value = id;
+				document.groupFolderEdit.state.value = state;
+				document.groupFolderEdit.submit();
+			}
+
+			function back() {
+				document.groupFolderEdit.action = "/mastar/groupFolderList";
+				document.groupFolderEdit.submit();
+			}
+		</script>
+	</head>
+	<body>
+		<form method="POST" name="groupFolderEdit">
+			{{ form.hidden_tag() }}
+			{% if form.group_folder_id.data == '0' %}
+				<button type="button" name="createGroupFolder" onclick="jump_upd('0', 'NEW');">作成</button>
+			{% else %}
+				<button type="button" name="createGroupFolder" onclick="jump_upd('{{form.group_folder_id.data}}', 'UPD');">更新</button>
+				<button type="button" name="delateGroupFolder" onclick="jump_upd('{{form.group_folder_id.data}}', 'DEL');">削除</button>
+			{% endif %}
+				<button type="button" name="backGroupFolder" onclick="back();">戻る</button>
+			<table>
+				<tbody>
+					<tr><td>グループフォルダーID</td><td>{{data[0]}}</td></tr>
+					{% if form.group_folder_id.data == '0' %}
+						<tr><td>グループフォルダー名</td><td><input type="text" name="group_folder_name" value="{{data[1]}}"></td></tr>
+					{% else %}
+						<tr><td>グループフォルダー名</td><td>{{data[1]}}</td></tr>
+					{% endif %}
+					<tr><td>グループフォルダーバージョン</td><td><input type="text" name="group_folder_version" value="{{data[2]}}"></td></tr>
+					<tr><td>JSONフォルダーパス</td><td>{{data[3]}}</td></tr>
+					<tr><td>グループフォルダーメモ</td><td><input type="text" name="group_folder_memo" value="{{data[4]}}"></td></tr>
+					<tr><td>作成日時</td><td>{{data[5]}}</td></tr>
+					<tr><td>更新日時</td><td>{{data[6]}}</td></tr>
+				</tbody>
+			</table>
+		</form>
+	</body>
+</html>
