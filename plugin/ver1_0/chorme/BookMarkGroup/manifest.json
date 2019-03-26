@@ -1,0 +1,46 @@
+{
+	"//": "マニフェストバージョン",
+	"manifest_version": 2,
+
+	"//": "アドオン名",
+	"name": "BookMarkGroup",
+
+	"//": "説明文",
+	"description": "未定",
+
+	"//": "バージョン",
+	"version":"1.0",
+
+	"//": "chrome Web Storeやchrome://extensionsなどの表示に使われるアイコン",
+	"icons": {
+		"16":"icon/icon.png",
+		"48":"icon/icon.png",
+		"128":"icon/icon.png"
+	},
+
+	"//": "ブラウザのバックグラウンドで使うJSの設定",
+	"background": {
+		"//": "JSのファイル設定",
+		"scripts":["js/mybookmark.js", "js/test.js"],
+		"//": "Event-Pageの有効無効設定",
+		"persistent":false
+	},
+
+	"//": "broser_actionタイプ作成時の設定",
+	"browser_action": {
+		"//": "ツールバーのアイコン設定",
+		"default_icon": {
+			"19": "icon/icon.png",
+			"38": "icon/icon.png"
+		},
+		"//": "ツールバーのタイトル名",
+		"default_title": "BookMarkGroup",
+		"//": "ツールバーのアイコンをクリック時に表示されるポップアップ",
+		"default_popup": "page/popup/debug.html"
+	},
+
+	"//": "権限設定",
+	"permissions": [
+		"bookmarks"
+	]
+}

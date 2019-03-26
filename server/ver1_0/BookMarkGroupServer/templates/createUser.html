@@ -1,0 +1,34 @@
+<html>
+	<head></head>
+	<body>
+		<form action="createUser" method="POST">
+			{{ form.hidden_tag() }}
+			<div>
+				{% for error in form.user_mail_address.errors %}
+					<span>{{ error }}</span><br>
+				{% endfor %}
+				{% for error in form.user_name.errors %}
+					<span>{{ error }}</span><br>
+				{% endfor %}
+				{% for error in form.user_password.errors %}
+					<span>{{ error }}</span><br>
+				{% endfor %}
+			</div>
+			<div>
+				{{ form.user_mail_address.label}}
+				{{ form.user_mail_address(placeholder="メールアドレス")}}
+			</div>
+			<div>
+				{{ form.user_name.label}}
+				{{ form.user_name(placeholder="ユーザ名") }}
+			</div>
+			<div>
+				{{ form.user_password.label}}
+				{{ form.user_password(placeholder="パスワード")}}
+			</div>
+			<div>
+				<input type="submit" name="submit">
+			</div>
+		</form>
+	</body>
+</html>
