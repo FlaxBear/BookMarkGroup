@@ -17,7 +17,7 @@ from Model import userModel, groupFolderModel, numberingModel, authorityModel
 import loginUser
 
 app = Flask(__name__)
-app.secret_key = ''
+app.secret_key = 'aaaa'
 
 login_maneger = LoginManager()
 login_maneger.init_app(app)

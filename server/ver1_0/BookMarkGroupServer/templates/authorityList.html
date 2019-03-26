@@ -1,50 +1,108 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>マスタ用権限一覧</title>
-		<script type="text/javascript">
-			function jump_edit(user_id, group_folder_id) {
-				document.authorityList.user_id.value = user_id;
-				document.authorityList.group_folder_id.value = group_folder_id;
-				document.authorityList.state.value = "SHOW";
-				document.authorityList.action = "/mastar/authorityEdit";
-				document.authorityList.submit();
+<head>
+	<!-- ===== 基本設定 ===== -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>管理者用権限一覧</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
+	<script type="text/javascript">
+		function jump_edit(user_id, group_folder_id) {
+			document.authorityList.user_id.value = user_id;
+			document.authorityList.group_folder_id.value = group_folder_id;
+			document.authorityList.state.value = "SHOW";
+			document.authorityList.action = "/mastar/authorityEdit";
+			document.authorityList.submit();
+		}
+
+		function jump_list(list_id) {
+			var action_url = '';
+
+			switch(list_id) {
+				case '0':
+					action_url = "/mastar/menu";
+					break;
+				case '1':
+					action_url = "/mastar/numberingList";
+					break;
+				case '2':
+					action_url = "/mastar/userList";
+					break;
+				case '3':
+					action_url = "/mastar/groupFolderList";
+					break;
+				case '4':
+					action_url = "/mastar/authorityList";
+					break;
 			}
 
-			function jump_back() {
-				document.authorityList.action = "/mastar";
-				document.authorityList.submit();
-			}
-		</script>
-	</head>
-	<body>
-		<form method="POST" name="authorityList">
-			{{ form.hidden_tag() }}
-			<button type="button" name="createAuthority" onclick="jump_edit('0', '0');">新規作成</button>
-			<button type="button" name="backMastar" onclick="jump_back();">戻る</button>
-			<table>
-				<thead>
-					<tr>
-						<th>&nbsp;</th>
-						<th>ID:ユーザ名</th>
-						<th>ID:グループフォルダー名</th>
-						<th>権限状態</th>
-						<th>作成日時</th>
-						<th>更新日時</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for value in data %}
+			document.authorityList.state.value = "SHOW";
+			document.authorityList.action=action_url;
+			document.authorityList.submit();
+		}
+	</script>
+	<!-- ===== 基本情報 ===== --> 
+</head>
+
+<body>
+	<!-- ===== ページ全体 ===== -->
+	<div id="page">
+		<!-- ===== ヘッダー情報 ===== -->
+		<header id="pageHead">
+			<h1 id="siteTitle">管理者用権限一覧</h1>
+			<nav class="globalNavi">
+				<ul>
+					<li><a onclick="jump_list('0');">メニュー</a></li>
+					<li><a onclick="jump_list('1');">採番一覧</a></li>
+					<li><a onclick="jump_list('2');">ユーザ一覧</a></li>
+					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
+					<li><a onclick="jump_list('4');">権限一覧</a></li>
+				</ul>
+			</nav>
+		</header>
+		<!-- ===== ヘッダー情報 ===== -->
+
+		<!-- ===== コンテンツ ===== -->
+		<div id="pageBody">
+			<form method="POST" name="authorityList">
+				{{ form.hidden_tag() }}
+				<button type="button" name="createAuthority" onclick="jump_edit('0', '0');">新規作成</button>
+				<table>
+					<thead>
 						<tr>
-							<td><button type="button" name="updateAuthority" onclick="jump_edit('{{value[0]}}', '{{value[1]}}');">更新</button></td>
-							<td>{{value[0]}}:{{value[2]}}</td>
-							<td>{{value[1]}}:{{value[3]}}</td>
-							<td>{{value[4]}}</td>
-							<td>{{value[5]}}</td>
-							<td>{{value[6]}}</td>
+							<th>&nbsp;</th>
+							<th>ID:ユーザ名</th>
+							<th>ID:グループフォルダー名</th>
+							<th>権限状態</th>
+							<th>作成日時</th>
+							<th>更新日時</th>
 						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{% for value in data %}
+							<tr>
+								<td><button type="button" name="updateAuthority" onclick="jump_edit('{{value[0]}}', '{{value[1]}}');">更新</button></td>
+								<td>{{value[0]}}:{{value[2]}}</td>
+								<td>{{value[1]}}:{{value[3]}}</td>
+								<td>{{value[4]}}</td>
+								<td>{{value[5]}}</td>
+								<td>{{value[6]}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<!-- ===== コンテンツ ===== -->
+
+		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
+		<!-- ===== フッダー情報 ===== -->
+		<footer id="pageFoot">
+			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
+		</footer>
+		<!-- ===== フッダー情報 ===== -->
+	</div>
+	<!-- ===== ページ全体 ===== -->
+</body>
+</html>

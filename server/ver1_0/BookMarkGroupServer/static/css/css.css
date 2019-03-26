@@ -1,4 +1,57 @@
+/* ボディ */
+body {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+
+	width: 100%;
+	height: 100%;
+}
+
+/* ページ */
+#page {
+	margin: auto;
+	padding: auto;
+
+	position: reslative;
+	top: 0;
+	left: 0;
+	
+	width: auto;
+	height: auto;
+}
+
 /* ヘッダー */
 #pageHead {
-	color: #d6c6af;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	
+}
+
+#pageHead #siteTitle {
+	font-size: 30px;
+	line-height: 1.2;
+	margin: 0;
+	color: #696969;
+
+	width: auto;
+	background: #d6c6af;
+}
+
+/* コンテンツ */
+
+/* 管理者用メニュー */
+/* ボタン */
+#pageBody button.menuButton {
+	padding: 50px 0px;
+	margin: 20px;
+	width: 350px;
+	background: #bee0c2;
+}
+
+/* ボタン名 */
+#pageBody button.menuButton #buttonName {
+	font-size: 1.4em;
+	font-weight: bold;
 }

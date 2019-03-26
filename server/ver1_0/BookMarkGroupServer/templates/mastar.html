@@ -47,15 +47,20 @@
 			<form method="POST" name="mastarList">
 				{{ form.csrf_token() }}
 				<input type="hidden" name="state" value="">
-				<button name="jump_numbering" onclick="jump_list('1');">採番一覧</button>
-				<button name="jump_numbering" onclick="jump_list('2');">ユーザ一覧</button>
-				<button name="jump_numbering" onclick="jump_list('3');">グループフォルダー一覧</button>
-				<button name="jump_numbering" onclick="jump_list('4');">グループフォルダー権限</button>
+				<table class="menuTable">
+					<tr>
+						<td><button name="jump_numbering" onclick="jump_list('1');" class="menuButton"><div id="buttonName">採番一覧</div></button></td>
+						<td><button name="jump_numbering" onclick="jump_list('2');" class="menuButton"><div id="buttonName">ユーザ一覧</div></button></td>
+					</tr>
+					<tr>
+						<td><button name="jump_numbering" onclick="jump_list('3');" class="menuButton"><div id="buttonName">フォルダー一覧</div></button></td>
+						<td><button name="jump_numbering" onclick="jump_list('4');" class="menuButton"><div id="buttonName">フォルダー権限</div></button></td>
+					</tr>
+				</table>
 			</form>
 		</div>
 		<!-- ===== コンテンツ ===== -->
 
-		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
 		<!-- ===== フッダー情報 ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
