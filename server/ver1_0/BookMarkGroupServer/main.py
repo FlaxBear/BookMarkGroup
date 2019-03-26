@@ -1,7 +1,9 @@
 import sys
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, make_response
 from flask_login import LoginManager, login_user, login_required
 from flask_wtf import FlaskForm
+
+import json
 
 sys.path.append('./Model')
 sys.path.append('./Validate')
@@ -22,7 +24,7 @@ app.secret_key = 'aaaa'
 login_maneger = LoginManager()
 login_maneger.init_app(app)
 
-# Root
+# Admin
 @app.route('/')
 def root():
 	return redirect(url_for("mastar"))
@@ -203,69 +205,125 @@ def authorityEdit():
 			html = render_template('authorityEdit.html', data=data, user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit,form=form)
 	return html
 
+# Plugin
 # Create User
 @app.route('/createUser', methods=['GET','POST'])
 def createUser():
-	form = createUserValidate.CreateUserValidate()
 	model = userModel.UserModel()
+	form = None
+
 	if request.method == "POST":
-		# Validate requrst data
 		if form.validate_on_submit():
-			# パスワード暗号化
-			# ユーザ作成処理
-			message = model.insertUser(form)
-			print(message)
-			# ログイン処理を遷移
-			#return redirect(url_for("loginUser"))
-			html = render_template('test_message.html', form=form)
-		else:
-			# Show Validate Error
-			html = render_template('createUser.html', form=form)
+			message, form.user_id.data = model.insertUser(form)
+
+			if message != 'Complate':
+				pass
+			else:
+				return redirect(url_for("loginUser"))
 	else:
-		# Show creteUser.html
-		html = render_template('createUser.html', form=form)
-	return html
+		return render_template('')
+
 
 # Login User
 @app.route('/loginUser', methods=['GET', 'POST'])
 def loginUser():
-	form = loginUserValidate.LoginUserValidate()
-	model = userModel.UserModel()
-	if request.method == "POST":
-		#Validate request data
-		if form.validate_on_submit():
-			# ログイン処理
-			pass
-		else:
-			# Show Validate Error
-			html = render_template('loginUser.html', form=form)
-	else:
-		# Show loginUser.html
-		html = render_template('loginUser.html', form=form)
 	pass
 
 # Sync Folders
 @app.route('/syncFolders', methods=['GET'])
 def syncFolders():
-	#バリデーション作成
-	pass
+	model = groupFolderModel.GroupFolderModel()
+	form = None
+
+	send_data = {}
+	data = []
+	message = ""
+	json_data = {}
+
+	if request.method == 'POST':
+		if form.validate_on_submit():
+			for value in form.folder_list.data:
+				data, message = model.selectGroupFolder(value)
+				f = open(data[3] + "/bookmarkList.json", "r")
+				json_data = json.load(f)
+				data += json_data
+		else:
+			message = "Error"
+			json_data = {}
+	else:
+		message = "Error"
+		json_data = {}
+	
+	send_data["message"] = message
+	send_data["data"] = data
+
+	return make_response(json.dumps(send_data, ensure_ascii=False))
 
 # Create GroupFolder
 @app.route('/createGroupFolder', methods=['POST'])
 def createGroupFolder():
-	#バリデーション作成
-	pass
+	model = groupFolderModel.GroupFolderModel()
+	form = None
+
+	send_data = {}
+	message = ""
+	name_id = {}
+
+	if request.method == 'POST':
+		if form.validate_on_submit():
+			message, form.group_folder_id.data = model.insertGroupFolder(form)
+
+			if message == "Complate":
+				name_id["folder_id"] = form.group_folder_id.data
+				name_id["folder_name"] = form.group_folder_name.data
+			else:
+				message = "Error"
+				name_id["folder_id"] = 0
+				name_id["folder_name"] = form.group_folder_name.data
+		else:
+			message = "Error"
+			name_id["folder_id"] = 0
+			name_id["folder_name"] = form.group_folder_name.data
+	else:
+		message = "Error"
+		name_id["folder_id"] = 0
+		name_id["folder_name"] = form.group_folder_name.data
+
+	send_data["message"] = message
+	send_data["data"] = name_id
+
+	return make_response(json.dumps(send_data, ensure_ascii=False))
 
 # Commit GroupFolder
 @app.route('/commitGroupFolder', methods=['POST'])
 def commitGroupFolder():
-	#バリデーション作成
-	pass
+	model = groupFolderModel.GroupFolderModel()
+	form = None
+
+	send_data = {}
+	message = ""
+	json_data = {}
+
+	if request.method == 'POST':
+		if form.validate_on_submit():
+			data, message = model.selectGroupFolder(form)
+			f = open(data[3] + "/bookmarkList.json", "r")
+			json_data = json.load(f)
+		else:
+			message = "Error"
+			json_data = {}
+	else:
+		message = "Error"
+		json_data = {}
+	
+	send_data["message"] = message
+	send_data["data"] = json_data
+
+	return make_response(json.dumps(send_data, ensure_ascii=False))
 
 # Update GroupFolder
 @app.route('/updateGroupFolder', methods=['POST'])
 def updateGroupFolder():
-	#バリデーション作成
 	pass
 
 # Delete GroupFolder
