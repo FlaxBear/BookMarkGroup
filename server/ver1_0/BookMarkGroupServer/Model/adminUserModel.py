@@ -6,18 +6,18 @@ class AdminUserModel(baseDB.BaseDB):
 	def __init__(self):
 		super().__init__()
 		self.table_info = {
-			"table": "adomin_user",
+			"table": "admin_user",
 			"param": {
-				"user_id": {"primary_key":"YES", "insert": "YES", "update": "YES"},
-				"user_name": {"primary_key":"NO", "insert": "YES", "update": "YES"},
-				"user_mail_address": {"primary_key":"NO", "insert": "YES", "update": "YES"},
-				"user_password":  {"primary_key":"NO", "insert": "YES", "update": "YES"},
+				"admin_user_id": {"primary_key":"YES", "insert": "YES", "update": "YES"},
+				"admin_user_name": {"primary_key":"NO", "insert": "YES", "update": "YES"},
+				"admin_user_login_id": {"primary_key":"NO", "insert": "YES", "update": "YES"},
+				"admin_user_password":  {"primary_key":"NO", "insert": "YES", "update": "YES"},
 				"create_time": { "primary_key":"NO", "insert": "YES", "update": "NO"},
 				"update_time": { "primary_key":"NO", "insert": "YES", "update": "YES"},
 			}
 		}
 
-	def selectUser(self, form):
+	def selectAdminUser(self, form):
 		select_value = self.createRequestSqlValue(form, self.table_info, "primary_key")
 		select_sql = self.createSelectSql(self.table_info)
 
@@ -27,44 +27,44 @@ class AdminUserModel(baseDB.BaseDB):
 
 		return select_data, message
 
-	def insertUser(self, form):
+	def insertAdminUser(self, form):
 		numbering_class = numberingModel.NumberingModel()
 
 		insert_value = self.createRequestSqlValue(form, self.table_info, "insert")
 
-		insert_value["user_id"], message = numbering_class.getNextValue("user_id")
-		insert_value["create_time"] = self.create_time()
-		insert_value["update_time"] = self.create_time()
-		insert_value["user_password"] = self.safty_password(insert_value["user_id"], insert_value["user_password"])
+		insert_value["admin_user_id"], message = numbering_class.getNextValue("admin_user_id")
+		insert_value["admin_create_time"] = self.create_time()
+		insert_value["admin_update_time"] = self.create_time()
+		insert_value["admin_user_password"] = self.safty_password(insert_value["admin_user_id"], insert_value["admin_user_password"])
 
 		insert_sql = self.createInsertSql(self.table_info)
-		
+
 		self.startConnect()
 		message = self.insertExecute(insert_sql, insert_value)
 		self.finishConnect()
 
-		return message, insert_value["user_id"]
+		return message, insert_value["admin_user_id"]
 
-	def updateUser(self, form):
+	def updateAdminUser(self, form):
 		update_value = self.createRequestSqlValue(form, self.table_info, "update")
 		update_value["update_time"] = self.create_time()
 
 		self.startConnect()
-		select_data, message = self.selectUser(form)
+		select_data, message = self.selectAdminUser(form)
 
-		if update_value["user_password"] == select_data[0][3]:
+		if update_value["admin_user_password"] == select_data[0][3]:
 			update_sql = self.createUpdateSql(self.table_info, False)
-			update_value.pop("user_password")
+			update_value.pop("admin_user_password")
 		else:
 			update_sql = self.createUpdateSql(self.table_info, True)
-			update_value["user_password"] = self.safty_password(update_value["user_id"], update_value["user_password"])
-			
+			update_value["admin_user_password"] = self.safty_password(update_value["admin_user_id"], update_value["admin_user_password"])
+
 		message = self.updateExecute(update_sql, update_value)
 		self.finishConnect()
 
 		return message
-	
-	def delateUser(self, form):
+
+	def delateAdminUser(self, form):
 		delate_value = self.createRequestSqlValue(form, self.table_info, "primary_key")
 		delate_sql = self.createDelateSql(self.table_info)
 
@@ -76,9 +76,9 @@ class AdminUserModel(baseDB.BaseDB):
 
 	def getList(self):
 		select_sql = """
-					 SELECT user_id, user_name, user_mail_address, user_password
+					 SELECT admin_user_id, admin_user_name, admin_user_login_id, admin_user_password
 					 , create_time, update_time
-					 FROM adomin_user
+					 FROM admin_user
 					"""
 		self.startConnect()
 		select_data, message = self.selectExecute(select_sql, {})
@@ -86,10 +86,10 @@ class AdminUserModel(baseDB.BaseDB):
 
 		return select_data, message
 
-	def getLoginData(self, user_mail_address):
-		select_sql = "SELECT user_id, user_mail_address, user_password FROM " + self.table_info["table"] + " WHERE user_mail_address"
+	def getLoginData(self, admin_user_login_id):
+		select_sql = "SELECT admin_user_id, admin_user_login_id, admin_user_password FROM " + self.table_info["table"] + " WHERE admin_user_login_id=%(admin_user_login_id)s"
 		sql_value = {
-			"user_mail_address": user_mail_address
+			"admin_user_login_id": admin_user_login_id
 		}
 
 		self.startConnect()

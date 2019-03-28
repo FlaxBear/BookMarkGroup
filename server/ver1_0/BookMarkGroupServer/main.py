@@ -7,6 +7,7 @@ sys.path.append('./Model')
 sys.path.append('./Validate')
 
 from Validate import ( loginUserValidate
+, adminUserEditShowValidate, adminUserEditUpdValidate
 , numberingEditShowValidate, numberingEditUpdValidate
 , userEditShowValidate, userEditUpdValidate
 , groupFolderEditShowValidate, groupFolderEditUpdValidate
@@ -67,6 +68,90 @@ def mastar():
 def mastarMenu():
 	form = FlaskForm()
 	html = render_template('mastarMenu.html', form=form)
+	return html
+
+# AdminUser List
+@app.route('/mastar/adminUserList', methods=['GET', 'POST'])
+def adminUserList():
+	form = FlaskForm()
+	model = adminUserModel.AdminUserModel()
+	message = {
+		"state": "",
+		"message": ""
+	}
+
+	data, result = model.getList()
+
+	if result == "Complate":
+		html = render_template('mastarAdminUserList.html', data=data, form=form, message=message)
+	else:
+		message["state"] = "Error"
+		message["message"] = result
+		html = render_template('errorPage.html', message=message)
+	return html
+
+# AdminUser Edit
+@app.route('/mastar/adminUserEdit', methods=['POST'])
+def adminUserEdit():
+	model = adminUserModel.AdminUserModel()
+	message = {
+		"state": "",
+		"message": ""
+	}
+
+	if request.method == "POST":
+
+		if request.form["state"] == "SHOW":
+			form = adminUserEditShowValidate.AdminUserEditShowValidate()
+
+			if form.validate_on_submit() == False:
+				message["state"] = "Error"
+				message["message"] = form.admin_user_id.errors
+				return redirect(url_for("adminUserList"))
+
+		else:
+			form = adminUserEditUpdValidate.AdminUserEditUpdValidate()
+
+			if form.validate_on_submit():
+
+				if form.state.data == 'NEW':
+					result, form.user_id.data = model.insertAdminUser(form)
+
+				elif form.state.data == 'UPD':
+					result = model.updateAdminUser(form)
+
+				elif form.state.data == 'DEL':
+					result = model.delateAdminUser(form)
+					form.admin_user_id.data = '0'
+
+				if result != "Complate":
+					message["state"] = "Error"
+					message["message"] = result
+
+			else:
+				message["state"] = "Error"
+				for error in form.admin_user_id.errors:
+					message["message"] += error + "<br>"
+				for error in form.admin_user_name.errors:
+					message["message"] += error + "<br>"
+				for error in form.admin_user_login_id.errors:
+					message["message"] += error + "<br>"
+				for error in form.admin_user_password.errors:
+					message["message"] += error + "<br>"
+
+		if form.admin_user_id.data != '0':
+			data, result = model.selectAdminUser(form)
+
+			if result == "Complate":
+				html = render_template('mastarUserEdit.html', data=data[0], form=form)
+			else:
+				message["state"] = "Error"
+				message["message"] = result
+				html = render_template('mastarUserEdit.html', data=data[0], form=form)
+		else:
+			data = ['', '', '', '', '']
+			html = render_template('mastarUserEdit.html', data=data, form=form)
+
 	return html
 
 # Numbering List

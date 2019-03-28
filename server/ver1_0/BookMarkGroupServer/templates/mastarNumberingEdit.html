@@ -31,6 +31,9 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
 			document.numberingEdit.state.value = "SHOW";
@@ -38,7 +41,7 @@
 			document.numberingEdit.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== 基本情報 ===== -->
 </head>
 <body>
 	<!-- ===== ページ全体 ===== -->
@@ -49,6 +52,7 @@
 			<nav class="globalNavi">
 				<ul>
 					<li><a onclick="jump_list('0');">メニュー</a></li>
+					<li><a onclick="jump_list('5');">管理者ユーザ一覧</a></li>
 					<li><a onclick="jump_list('1');">採番一覧</a></a></li>
 					<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
 					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
@@ -69,7 +73,7 @@
 					<button type="button" name="delateNumbering" onclick="jump_upd('{{form.numbering_id.data}}', 'DEL');">削除</button>
 				{% endif %}
 					<button type="button" name="backNumbering" onclick="jump_list('1');">戻る</button>
-	
+
 				<table>
 					<tbody>
 						<tr><td>採番ID</td><td>{{data[0]}}</td></tr>
@@ -82,7 +86,7 @@
 			</form>
 		</div>
 		<!-- ===== コンテンツ ===== -->
-		
+
 		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
 		<!-- ===== フッダー情報 ===== -->
 		<footer id="pageFoot">
