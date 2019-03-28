@@ -26,10 +26,10 @@ class BaseDB:
 
 	def __init__(self):
 		"""Set attributes."""
-		self.__user = ""
+		self.__user = "root"
 		self.__password = ""
-		self.__host = ""
-		self.__db = ""
+		self.__host = "localhost"
+		self.__db = "bookmarkgroup"
 		self.__conn = None
 		self.__cur = None
 

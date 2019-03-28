@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ===== 基本設定 ===== -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>管理者用ログイン</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
+	<script type="text/javascript">
+		function jump_login() {
+			document.login.submit();
+		}
+	</script>
+	<!-- ===== 基本情報 ===== --> 
+</head>
+<body>
+	<!-- ===== ページ全体 ===== -->
+	<div id="page">
+		<!-- ===== ヘッダー情報 ===== -->
+		<header id="pageHead">
+			<h1 id="siteTitle">管理者用ログイン</h1>
+		</header>
+		<!-- ===== ヘッダー情報 ===== -->
+
+		<!-- ===== コンテンツ ===== -->
+		<div id="pageBody">
+			<form method="POST" name="login">
+				{{ form.csrf_token() }}
+				{% if message != '' %}
+					<div class="error_message">
+						{{data}}
+					</div>
+				{% endif %}
+				<table>
+					<tbody>
+						<tr>
+							<th>MailAddress</th>
+							<th><input type="text" name="user_mail_address"></th>
+						</tr>
+						<tr>
+							<th>PassWord</th>
+							<th><input type="password" name="user_password"></th>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<!-- ===== コンテンツ ===== -->
+
+		<!-- ===== フッダー情報 ===== -->
+		<footer id="pageFoot">
+			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
+		</footer>
+		<!-- ===== フッダー情報 ===== -->
+	</div>
+	<!-- ===== ページ全体 ===== -->
+</body>
+</html>

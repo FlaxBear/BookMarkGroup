@@ -10,10 +10,6 @@ class NumberingEditShowValidate(FlaskForm):
 	create_time = TimeField()
 	update_time = TimeField()
 
-	def validate_state(self, state):
-		if state.data == "":
-			raise ValidationError("")
-
 	def validate_numbering_id(self, numbering_id):
 		if numbering_id.data == "":
 			raise ValidationError("採番IDが選択されていません")

@@ -12,10 +12,6 @@ class GroupFolderUpdValidate(FlaskForm):
 	create_time = TimeField()
 	update_time = TimeField()
 
-	def validate_state(self, state):
-		if state.data == "":
-			raise ValidationError("")
-
 	def validate_group_folder_id(self, group_folder_id):
 		if group_folder_id.data == "":
 			raise ValidationError("グループフォルダーIDが選択されていません")
@@ -23,6 +19,16 @@ class GroupFolderUpdValidate(FlaskForm):
 			pass
 			# 存在チェック
 			
+	def validate_group_folder_name(self, group_folder_name):
+		if group_folder_name.data == "":
+			raise ValidationError("グループフォルダー名を入力してください")
+
+		if len(group_folder_name.data) > 20:
+			raise ValidationError("グループフォルダー名は20文字以内にしてください")
+
+		if r"[^.!#$%&'*+\/=?^_`{|}~-]" in group_folder_name.data:
+			raise ValidationError(r"グループフォルダー名に.!#$%&'*+\/=?^_`{|}~-は含められません。")
+
 	def validate_group_folder_version(self, group_folder_version):
 		if group_folder_version.data == "":
 			raise ValidationError("グループフォルダーバージョンを入力してください")

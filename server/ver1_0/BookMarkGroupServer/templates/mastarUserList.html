@@ -4,15 +4,15 @@
 	<!-- ===== 基本設定 ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用採番一覧</title>
+	<title>管理者用ユーザ一覧</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
 		function jump_edit(id) {
-			document.numberingList.numbering_id.value = id;
-			document.numberingList.state.value = "SHOW";
-			document.numberingList.action = "/mastar/numberingEdit";
-			document.numberingList.submit();
+			document.userList.user_id.value = id;
+			document.userList.state.value = "SHOW";
+			document.userList.action  = "/mastar/userEdit";
+			document.userList.submit();
 		}
 
 		function jump_list(list_id) {
@@ -36,19 +36,19 @@
 					break;
 			}
 
-			document.numberingList.state.value = "SHOW";
-			document.numberingList.action=action_url;
-			document.numberingList.submit();
+			document.userList.state.value = "SHOW";
+			document.userList.action=action_url;
+			document.userList.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== 基本情報 ===== -->
 </head>
 <body>
 	<!-- ===== ページ全体 ===== -->
 	<div id="page">
 		<!-- ===== ヘッダー情報 ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用採番一覧</h1>
+			<h1 id="siteTitle">管理者用ユーザ一覧</h1>
 			<nav class="globalNavi">
 				<ul>
 					<li><a onclick="jump_list('0');">メニュー</a></li>
@@ -63,16 +63,19 @@
 
 		<!-- ===== コンテンツ ===== -->
 		<div id="pageBody">
-			<form method="POST" name="numberingList">
-				{{ form.hidden_tag() }}
-				<button type="button" name="createNumbering" onclick="jump_edit('0');">新規作成</button>
+			<form method="POST" name="userList">
+				{{ form.csrf_token() }}
+				<input type="hidden" name="state" value="">
+				<input type="hidden" name="user_id" value="">
+				<button type="button" name="createUser" onclick="jump_edit('0');">新規作成</button>
 				<table>
 					<thead>
 						<tr>
 							<th>&nbsp;</th>
-							<th>採番ID</th>
-							<th>カラム名</th>
-							<th>次回値</th>
+							<th>ユーザID</th>
+							<th>ユーザ名</th>
+							<th>ユーザメールアドレス</th>
+							<th>パスワード</th>
 							<th>作成日時</th>
 							<th>更新日時</th>
 						</tr>
@@ -80,7 +83,7 @@
 					<tbody>
 						{% for value in data %}
 							<tr>
-								<td><button type="button" name="updateNumbering" onclick="jump_edit('{{value[0]}}');">更新</button></td>
+								<td><button type="button" name="updateUser" onclick="jump_edit('{{value[0]}}');">更新</button></td>
 								{% for test in value %}
 									<td>{{test}}</td>
 								{% endfor %}

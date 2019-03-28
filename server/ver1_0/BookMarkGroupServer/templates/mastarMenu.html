@@ -24,6 +24,9 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
 			document.mastarList.state.value = "SHOW";
@@ -49,13 +52,17 @@
 				<input type="hidden" name="state" value="">
 				<table class="menuTable">
 					<tr>
-						<td><button name="jump_numbering" onclick="jump_list('1');" class="menuButton"><div id="buttonName">採番一覧</div></button></td>
-						<td><button name="jump_numbering" onclick="jump_list('2');" class="menuButton"><div id="buttonName">ユーザ一覧</div></button></td>
+						<td><button onclick="jump_list('5');" class="menuButton"><div id="buttonName">管理者ユーザ一覧</div></button></td>
+						<td><button onclick="jump_list('1');" class="menuButton"><div id="buttonName">採番一覧</div></button></td>
 					</tr>
 					<tr>
-						<td><button name="jump_numbering" onclick="jump_list('3');" class="menuButton"><div id="buttonName">フォルダー一覧</div></button></td>
-						<td><button name="jump_numbering" onclick="jump_list('4');" class="menuButton"><div id="buttonName">フォルダー権限</div></button></td>
+						<td><button onclick="jump_list('2');" class="menuButton"><div id="buttonName">ユーザ一覧</div></button></td>
+						<td><button onclick="jump_list('3');" class="menuButton"><div id="buttonName">フォルダー一覧</div></button></td>
 					</tr>
+					<tr>
+						<td><button onclick="jump_list('4');" class="menuButton"><div id="buttonName">フォルダー権限</div></button></td>
+					</tr>
+					
 				</table>
 			</form>
 		</div>
