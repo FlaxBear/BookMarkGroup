@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- ===== 基本設定 ===== -->
+	<!-- ===== Basic Setting ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用ログイン</title>
+	<title>Adminstrator Login</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
@@ -12,18 +12,18 @@
 			document.login.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== Basic Setting ===== -->
 </head>
 <body>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 	<div id="page">
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用ログイン</h1>
+			<h1 id="siteTitle">Adminstrator Login</h1>
 		</header>
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 		<div id="pageBody">
 			<form method="POST" name="login">
 				{{ form.csrf_token() }}
@@ -35,25 +35,28 @@
 				<table>
 					<tbody>
 						<tr>
-							<th>MailAddress</th>
-							<th><input type="text" name="user_mail_address"></th>
+							<th>Login ID</th>
+							<th><input type="text" name="admin_user_login_id"></th>
 						</tr>
 						<tr>
 							<th>PassWord</th>
-							<th><input type="password" name="user_password"></th>
+							<th><input type="password" name="admin_user_password"></th>
+						</tr>
+						<tr>
+							<th><button type="button" onclick="jump_login();">Login</button></th>
 						</tr>
 					</tbody>
 				</table>
 			</form>
 		</div>
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
 		</footer>
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 	</div>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 </body>
 </html>

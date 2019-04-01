@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- ===== 基本設定 ===== -->
+	<!-- ===== Basic Setting ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用メニュー</title>
+	<title>Administrator Menu</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
@@ -27,6 +27,9 @@
 				case '5':
 					action_url = "/mastar/adminUserList";
 					break;
+				case '6':
+					action_url = "/mastar/logout";
+					break;
 			}
 
 			document.mastarList.state.value = "SHOW";
@@ -34,43 +37,44 @@
 			document.mastarList.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== -->
+	<!-- ===== Basic Setting ===== -->
 </head>
 <body>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 	<div id="page">
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用メニュー</h1>
+			<h1 id="siteTitle">Administrator Menu</h1>
 		</header>
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 		<div id="pageBody">
 			<form method="POST" name="mastarList">
 				{{ form.csrf_token() }}
 				<input type="hidden" name="state" value="">
 				<table class="menuTable">
 					<tr>
-						<td><button onclick="jump_list('5');" class="menuButton"><div id="buttonName">管理者ユーザ一覧</div></button></td>
-						<td><button onclick="jump_list('1');" class="menuButton"><div id="buttonName">採番一覧</div></button></td>
+						<td><button onclick="jump_list('5');" class="menuButton"><div id="buttonName">Administrator User List</div></button></td>
+						<td><button onclick="jump_list('1');" class="menuButton"><div id="buttonName">Numbering List</div></button></td>
+						<td><button onclick="jump_list('2');" class="menuButton"><div id="buttonName">User List</div></button></td>
 					</tr>
 					<tr>
-						<td><button onclick="jump_list('2');" class="menuButton"><div id="buttonName">ユーザ一覧</div></button></td>
-						<td><button onclick="jump_list('3');" class="menuButton"><div id="buttonName">フォルダー一覧</div></button></td>
-						<td><button onclick="jump_list('4');" class="menuButton"><div id="buttonName">フォルダー権限</div></button></td>
+						<td><button onclick="jump_list('3');" class="menuButton"><div id="buttonName">Group Folder List</div></button></td>
+						<td><button onclick="jump_list('4');" class="menuButton"><div id="buttonName">Authority List</div></button></td>
+						<td><button onclick="jump_list('6');" class="menuButton"><div id="buttonName">Logout</div></button></td>
 					</tr>
 				</table>
 			</form>
 		</div>
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
 		</footer>
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 	</div>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 </body>
 </html>

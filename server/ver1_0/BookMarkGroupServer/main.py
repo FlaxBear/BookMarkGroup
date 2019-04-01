@@ -1,5 +1,5 @@
 import sys, json
-from flask import Flask, render_template, redirect, url_for, request, make_response
+from flask import Flask, render_template, redirect, url_for, request, make_response, session
 from flask_login import LoginManager, login_user, login_required, UserMixin
 from flask_wtf import FlaskForm
 
@@ -13,6 +13,7 @@ from Validate import ( loginUserValidate
 , groupFolderEditShowValidate, groupFolderEditUpdValidate
 , authorityEditShowValidate, authorityEditUpdValidate
 , createUserValidate, loginUserValidate)
+
 from Model import adminUserModel, userModel, groupFolderModel, numberingModel, authorityModel
 
 app = Flask(__name__)
@@ -42,13 +43,14 @@ def mastar():
 
 		if form.validate_on_submit() == True:
 			model = adminUserModel.AdminUserModel()
-			select_data, result = model.getLoginData(form.user_mail_address.data)
-			crypto_password = model.safty_password(select_data[0], form.user_password.data)
-
-			if select_data[2] == crypto_password:
-				user = User()
-				user.id = select_data[0]
-				login_user(user)
+			select_data, result = model.getLoginData(form.admin_user_login_id.data)
+			crypto_password = model.safty_password(select_data[0][0], form.admin_user_password.data)
+			if select_data[0][2] == crypto_password:
+				# user = User()
+				# user.id = select_data[0][2]
+				# login_user(user)
+				session['admin_user_id'] = select_data[0][0]
+				session['admin_user_login_id'] = select_data[0][1]
 				return redirect(url_for('mastarMenu'))
 
 			else:
@@ -56,22 +58,87 @@ def mastar():
 				return render_template('mastarLogin.html', form=form, message=message)
 
 		else:
-			message += form.user_mail_address.errors + '<br>'
-			message += form.user_password.errors
+			for error in form.admin_user_login_id.errors:
+				message += error + '<br>'
+			for error in form.admin_user_password.errors:
+				message += error + '<br>'
 			return render_template('mastarLogin.html', form=form, message=message)
 
 	else:
+		form = FlaskForm()
 		return render_template('mastarLogin.html', form=form, message=message)
+
+@login_maneger.user_loader
+def user_loader(user_id):
+	# model = adminUserModel.AdminUserModel()
+	# data, result = model.getLoginData(user_id)
+
+	# if data == []:
+	# 	return
+
+	# user = User()
+	# user.id = user_id
+	# return user
+	pass
+
+@login_maneger.request_loader
+def request_loader(request):
+	# user_id = request.form.get('admin_user_id')
+	# model = adminUserModel.AdminUserModel()
+	# data, result = model.getLoginData(user_id)
+
+	# if data == []:
+	# 	return
+
+	# user = User()
+	# user.id = user_id
+
+	# user.is_authenticated = True
+	# return user
+	pass
+
+def login_admin_user_check(session):
+	check = False
+	if 'admin_user_id' in session and 'admin_user_login_id' in session:
+		model = adminUserModel.AdminUserModel()
+		select_data, message = model.getLoginData(session['admin_user_login_id'])
+
+		if (message == "Complate") and (select_data[0][0] == session['admin_user_id']):
+			check = True
+		else:
+			check = False
+	else:
+		check = False
+
+	return check
 
 # Admin Menu
 @app.route('/mastar/menu', methods=['GET', 'POST'])
+#@login_required
 def mastarMenu():
+	model = adminUserModel.AdminUserModel()
 	form = FlaskForm()
-	html = render_template('mastarMenu.html', form=form)
+
+	if login_admin_user_check(session):
+		html = render_template('mastarMenu.html', form=form)
+	else:
+		html = redirect(url_for('mastar'))
 	return html
+
+	# if 'admin_user_id' in session:
+	# 	select_data, message = model.getLoginData(session['admin_user_id'])
+	# 	if message == 'Complate':
+	# 		html = render_template('mastarMenu.html', form=form)
+	# 	else:
+	# 		html = render_template('mastarLogin.html', form=form, message=message)
+	# else:
+	# 	message = "Error"
+	# 	html = redirect(url_for('mastar'))
+	# return html
 
 # AdminUser List
 @app.route('/mastar/adminUserList', methods=['GET', 'POST'])
+#@login_required
 def adminUserList():
 	form = FlaskForm()
 	model = adminUserModel.AdminUserModel()
@@ -80,18 +147,24 @@ def adminUserList():
 		"message": ""
 	}
 
-	data, result = model.getList()
 
-	if result == "Complate":
-		html = render_template('mastarAdminUserList.html', data=data, form=form, message=message)
+	if login_admin_user_check(session):
+		data, result = model.getList()
+
+		if result == "Complate":
+			html = render_template('mastarAdminUserList.html', data=data, form=form, message=message)
+		else:
+			message["state"] = "Error"
+			message["message"] = result
+			html = render_template('errorPage.html', message=message)
 	else:
-		message["state"] = "Error"
-		message["message"] = result
-		html = render_template('errorPage.html', message=message)
+		html = redirect(url_for('mastar'))
+
 	return html
 
 # AdminUser Edit
 @app.route('/mastar/adminUserEdit', methods=['POST'])
+#@login_required
 def adminUserEdit():
 	model = adminUserModel.AdminUserModel()
 	message = {
@@ -99,58 +172,61 @@ def adminUserEdit():
 		"message": ""
 	}
 
-	if request.method == "POST":
+	if login_admin_user_check(session):
+		if request.method == "POST":
 
-		if request.form["state"] == "SHOW":
-			form = adminUserEditShowValidate.AdminUserEditShowValidate()
+			if request.form["state"] == "SHOW":
+				form = adminUserEditShowValidate.AdminUserEditShowValidate()
 
-			if form.validate_on_submit() == False:
-				message["state"] = "Error"
-				message["message"] = form.admin_user_id.errors
-				return redirect(url_for("adminUserList"))
-
-		else:
-			form = adminUserEditUpdValidate.AdminUserEditUpdValidate()
-
-			if form.validate_on_submit():
-
-				if form.state.data == 'NEW':
-					result, form.user_id.data = model.insertAdminUser(form)
-
-				elif form.state.data == 'UPD':
-					result = model.updateAdminUser(form)
-
-				elif form.state.data == 'DEL':
-					result = model.delateAdminUser(form)
-					form.admin_user_id.data = '0'
-
-				if result != "Complate":
+				if form.validate_on_submit() == False:
 					message["state"] = "Error"
-					message["message"] = result
+					message["message"] = form.admin_user_id.errors
+					return redirect(url_for("adminUserList"))
 
 			else:
-				message["state"] = "Error"
-				for error in form.admin_user_id.errors:
-					message["message"] += error + "<br>"
-				for error in form.admin_user_name.errors:
-					message["message"] += error + "<br>"
-				for error in form.admin_user_login_id.errors:
-					message["message"] += error + "<br>"
-				for error in form.admin_user_password.errors:
-					message["message"] += error + "<br>"
+				form = adminUserEditUpdValidate.AdminUserEditUpdValidate()
+
+				if form.validate_on_submit():
+
+					if form.state.data == 'NEW':
+						result, form.admin_user_id.data = model.insertAdminUser(form)
+
+					elif form.state.data == 'UPD':
+						result = model.updateAdminUser(form)
+
+					elif form.state.data == 'DEL':
+						result = model.delateAdminUser(form)
+						form.admin_user_id.data = '0'
+
+					if result != "Complate":
+						message["state"] = "Error"
+						message["message"] = result
+
+				else:
+					message["state"] = "Error"
+					for error in form.admin_user_id.errors:
+						message["message"] += error + "<br>"
+					for error in form.admin_user_name.errors:
+						message["message"] += error + "<br>"
+					for error in form.admin_user_login_id.errors:
+						message["message"] += error + "<br>"
+					for error in form.admin_user_password.errors:
+						message["message"] += error + "<br>"
 
 		if form.admin_user_id.data != '0':
 			data, result = model.selectAdminUser(form)
 
 			if result == "Complate":
-				html = render_template('mastarUserEdit.html', data=data[0], form=form)
+				html = render_template('mastarAdminUserEdit.html', data=data[0], form=form)
 			else:
 				message["state"] = "Error"
 				message["message"] = result
-				html = render_template('mastarUserEdit.html', data=data[0], form=form)
+				html = render_template('mastarAdminUserEdit.html', data=data[0], form=form)
 		else:
 			data = ['', '', '', '', '']
-			html = render_template('mastarUserEdit.html', data=data, form=form)
+			html = render_template('mastarAdminUserEdit.html', data=data, form=form)
+	else:
+		html = redirect(url_for('mastar'))
 
 	return html
 
@@ -164,14 +240,18 @@ def numberingList():
 		"message": ""
 	}
 
-	data, result = model.getList()
+	if login_admin_user_check(session):
+		data, result = model.getList()
 
-	if result == "Complate":
-		html = render_template('mastarNumberingList.html', data=data, form=form, message=message)
+		if result == "Complate":
+			html = render_template('mastarNumberingList.html', data=data, form=form, message=message)
+		else:
+			message["state"] = "Error"
+			message["message"] = result
+			html = render_template('errorPage.html', message=message)
 	else:
-		message["state"] = "Error"
-		message["message"] = result
-		html = render_template('errorPage.html', message=message)
+		html = redirect(url_for('mastar'))
+
 	return html
 
 # Numbering Edit
@@ -183,54 +263,58 @@ def numberingEdit():
 		"message": ""
 	}
 
-	if request.method == "POST":
+	if login_admin_user_check(session):
+		if request.method == "POST":
 
-		if request.form["state"] == "SHOW":
-			form = numberingEditShowValidate.NumberingEditShowValidate()
+			if request.form["state"] == "SHOW":
+				form = numberingEditShowValidate.NumberingEditShowValidate()
 
-			if form.validate_on_submit() == False:
-				message["state"] = "Error"
-				message["message"] = form.numbering_id.errors
-				return redirect(url_for("numberingList"))
-		else:
-			form = numberingEditUpdValidate.NumberingEditUpdValidate()
+				if form.validate_on_submit() == False:
+					message["state"] = "Error"
+					message["message"] = form.numbering_id.errors
+					return redirect(url_for("numberingList"))
+			else:
+				form = numberingEditUpdValidate.NumberingEditUpdValidate()
 
-			if form.validate_on_submit():
+				if form.validate_on_submit():
 
-				if form.state.data == 'NEW':
-					result, form.numbering_id.data = model.insertNumbering(form)
+					if form.state.data == 'NEW':
+						result, form.numbering_id.data = model.insertNumbering(form)
 
-				elif form.state.data == 'UPD':
-					result = model.updateNumbergin(form)
+					elif form.state.data == 'UPD':
+						result = model.updateNumbergin(form)
 
-				elif form.state.data == 'DEL':
-					result = model.delateNumbergin(form)
-					form.numbering_id.data = '0'
+					elif form.state.data == 'DEL':
+						result = model.delateNumbergin(form)
+						form.numbering_id.data = '0'
 
-				if result != "Complate":
+					if result != "Complate":
+						message["state"] = "Error"
+						message["message"] = result
+				else:
+					message["state"] = "Error"
+					for error in form.numbering_id.errors:
+						message["message"] += error + "<br>"
+					for error in form.numbering_name.errors:
+						message["message"] += error + "<br>"
+					for error in form.next_value.errors:
+						message["message"] += error + "<br>"
+
+			if form.numbering_id.data != '0':
+				data, result = model.selectNumbering(form)
+
+				if result == "Complate":
+					html = render_template('mastarNumberingEdit.html', data=data[0], form=form, message=message)
+				else:
 					message["state"] = "Error"
 					message["message"] = result
+					html = render_template('mastarNumberingList.html', data=data, form=form, message=message)
 			else:
-				message["state"] = "Error"
-				for error in form.numbering_id.errors:
-					message["message"] += error + "<br>"
-				for error in form.numbering_name.errors:
-					message["message"] += error + "<br>"
-				for error in form.next_value.errors:
-					message["message"] += error + "<br>"
+				data = ['', '', '', '', '', '']
+				html = render_template('mastarNumberingEdit.html', data=data, form=form, message=message)
 
-		if form.numbering_id.data != '0':
-			data, result = model.selectNumbering(form)
-
-			if result == "Complate":
-				html = render_template('mastarNumberingEdit.html', data=data[0], form=form, message=message)
-			else:
-				message["state"] = "Error"
-				message["message"] = result
-				html = render_template('mastarNumberingList.html', data=data, form=form, message=message)
-		else:
-			data = ['', '', '', '', '', '']
-			html = render_template('mastarNumberingEdit.html', data=data, form=form, message=message)
+	else:
+		html = redirect(url_for('mastar'))
 
 	return html
 
@@ -244,14 +328,18 @@ def userList():
 		"message": ""
 	}
 
-	data, result = model.getList()
+	if login_admin_user_check(session):
+		data, result = model.getList()
 
-	if result == "Complate":
-		html = render_template('mastarUserList.html', data=data, form=form)
+		if result == "Complate":
+			html = render_template('mastarUserList.html', data=data, form=form)
+		else:
+			message["state"] = "Error"
+			message["message"] = result
+			html = render_template('errorPage.html', message=message)
 	else:
-		message["state"] = "Error"
-		message["message"] = result
-		html = render_template('errorPage.html', message=message)
+		html = redirect(url_for('mastar'))
+
 	return html
 
 # User Edit
@@ -263,58 +351,61 @@ def userEdit():
 		"message": ""
 	}
 
-	if request.method == "POST":
+	if login_admin_user_check(session):
+		if request.method == "POST":
 
-		if request.form["state"] == "SHOW":
-			form = userEditShowValidate.UserEditShowValidate()
+			if request.form["state"] == "SHOW":
+				form = userEditShowValidate.UserEditShowValidate()
 
-			if form.validate_on_submit() == False:
-				message["state"] = "Error"
-				message["message"] = form.user_id.errors
-				return redirect(url_for("userList"))
+				if form.validate_on_submit() == False:
+					message["state"] = "Error"
+					message["message"] = form.user_id.errors
+					return redirect(url_for("userList"))
 
-		else:
-			form = userEditUpdValidate.UserEditUpdValidate()
+			else:
+				form = userEditUpdValidate.UserEditUpdValidate()
 
-			if form.validate_on_submit():
+				if form.validate_on_submit():
 
-				if form.state.data == 'NEW':
-					result, form.user_id.data = model.insertUser(form)
+					if form.state.data == 'NEW':
+						result, form.user_id.data = model.insertUser(form)
 
-				elif form.state.data == 'UPD':
-					result = model.updateUser(form)
+					elif form.state.data == 'UPD':
+						result = model.updateUser(form)
 
-				elif form.state.data == 'DEL':
-					result = model.delateUser(form)
-					form.user_id.data = '0'
+					elif form.state.data == 'DEL':
+						result = model.delateUser(form)
+						form.user_id.data = '0'
 
-				if result != "Complate":
+					if result != "Complate":
+						message["state"] = "Error"
+						message["message"] = result
+
+				else:
+					message["state"] = "Error"
+					for error in form.user_id.errors:
+						message["message"] += error + "<br>"
+					for error in form.user_name.errors:
+						message["message"] += error + "<br>"
+					for error in form.user_mail_address.errors:
+						message["message"] += error + "<br>"
+					for error in form.user_password.errors:
+						message["message"] += error + "<br>"
+
+			if form.user_id.data != '0':
+				data, result = model.selectUser(form)
+
+				if result == "Complate":
+					html = render_template('mastarUserEdit.html', data=data[0], form=form)
+				else:
 					message["state"] = "Error"
 					message["message"] = result
-
+					html = render_template('mastarUserEdit.html', data=data[0], form=form)
 			else:
-				message["state"] = "Error"
-				for error in form.user_id.errors:
-					message["message"] += error + "<br>"
-				for error in form.user_name.errors:
-					message["message"] += error + "<br>"
-				for error in form.user_mail_address.errors:
-					message["message"] += error + "<br>"
-				for error in form.user_password.errors:
-					message["message"] += error + "<br>"
-
-		if form.user_id.data != '0':
-			data, result = model.selectUser(form)
-
-			if result == "Complate":
-				html = render_template('mastarUserEdit.html', data=data[0], form=form)
-			else:
-				message["state"] = "Error"
-				message["message"] = result
-				html = render_template('mastarUserEdit.html', data=data[0], form=form)
-		else:
-			data = ['', '', '', '', '']
-			html = render_template('mastarUserEdit.html', data=data, form=form)
+				data = ['', '', '', '', '']
+				html = render_template('mastarUserEdit.html', data=data, form=form)
+	else:
+		html = redirect(url_for('mastar'))
 
 	return html
 
@@ -328,14 +419,18 @@ def groupFolderList():
 		"message": ""
 	}
 
-	data, result = model.getList()
+	if login_admin_user_check(session):
+		data, result = model.getList()
 
-	if result == "Complate":
-		html = render_template('mastarGroupFolderList.html', data=data, form=form, message=message)
+		if result == "Complate":
+			html = render_template('mastarGroupFolderList.html', data=data, form=form, message=message)
+		else:
+			message["state"] = "Error"
+			message["message"] = result
+			html = render_template('errorPage.html', message=message)
 	else:
-		message["state"] = "Error"
-		message["message"] = result
-		html = render_template('errorPage.html', message=message)
+		html = redirect(url_for('mastar'))
+
 	return html
 
 # GroupFolder Edit
@@ -347,57 +442,60 @@ def groupFolderEdit():
 		"message": ""
 	}
 
-	if request.method == 'POST':
+	if login_admin_user_check(session):
+		if request.method == 'POST':
 
-		if request.form["state"] == "SHOW":
-			form = groupFolderEditShowValidate.GroupFolderEditShowValidate()
+			if request.form["state"] == "SHOW":
+				form = groupFolderEditShowValidate.GroupFolderEditShowValidate()
 
-			if form.validate_on_submit() == False:
-				message["state"] = "Error"
-				message["message"] = form.group_folder_id.errors
-				return redirect(url_for("groupFolderList"))
-		else:
-			form = groupFolderEditUpdValidate.GroupFolderUpdValidate()
+				if form.validate_on_submit() == False:
+					message["state"] = "Error"
+					message["message"] = form.group_folder_id.errors
+					return redirect(url_for("groupFolderList"))
+			else:
+				form = groupFolderEditUpdValidate.GroupFolderUpdValidate()
 
-			if form.validate_on_submit():
+				if form.validate_on_submit():
 
-				if form.state.data == 'NEW':
-					result, form.group_folder_id.data = model.insertGroupFolder(form)
+					if form.state.data == 'NEW':
+						result, form.group_folder_id.data = model.insertGroupFolder(form)
 
-				elif form.state.data == 'UPD':
-					result = model.updateGroupFolder(form)
+					elif form.state.data == 'UPD':
+						result = model.updateGroupFolder(form)
 
-				elif form.state.data == 'DEL':
-					result = model.delateGroupFolder(form)
-					form.group_folder_id.data = '0'
+					elif form.state.data == 'DEL':
+						result = model.delateGroupFolder(form)
+						form.group_folder_id.data = '0'
 
-				if result != "Complate":
+					if result != "Complate":
+						message["state"] = "Error"
+						message["message"] = result
+
+				else:
+					message["state"] = "Error"
+					for error in form.group_folder_id.errors:
+						message["message"] += error + "<br>"
+					for error in form.group_folder_name.errors:
+						message["message"] += error + "<br>"
+					for error in form.group_folder_version.errors:
+						message["message"] += error + "<br>"
+					for error in form.group_folder_memo.errors:
+						message["message"] += error + "<br>"
+
+			if form.group_folder_id.data != '0':
+				data, result = model.selectGroupFolder(form)
+
+				if result == "Complate":
+					html = render_template('mastarGroupFolderEdit.html', data=data[0], form=form)
+				else:
 					message["state"] = "Error"
 					message["message"] = result
-
+					html = render_template('mastarGroupFolderEdit.html', data=data[0], form=form)
 			else:
-				message["state"] = "Error"
-				for error in form.group_folder_id.errors:
-					message["message"] += error + "<br>"
-				for error in form.group_folder_name.errors:
-					message["message"] += error + "<br>"
-				for error in form.group_folder_version.errors:
-					message["message"] += error + "<br>"
-				for error in form.group_folder_memo.errors:
-					message["message"] += error + "<br>"
-
-		if form.group_folder_id.data != '0':
-			data, result = model.selectGroupFolder(form)
-
-			if result == "Complate":
-				html = render_template('mastarGroupFolderEdit.html', data=data[0], form=form)
-			else:
-				message["state"] = "Error"
-				message["message"] = result
-				html = render_template('mastarGroupFolderEdit.html', data=data[0], form=form)
-		else:
-			data = ['', '', '', '', '', '', '']
-			html = render_template('mastarGroupFolderEdit.html', data=data, form=form)
+				data = ['', '', '', '', '', '', '']
+				html = render_template('mastarGroupFolderEdit.html', data=data, form=form)
+	else:
+		html = redirect(url_for('mastar'))
 
 	return html
 
@@ -411,14 +509,17 @@ def authorityList():
 		"message": ""
 	}
 
-	data, result = model.getList()
+	if login_admin_user_check(session):
+		data, result = model.getList()
 
-	if result == "Complate":
-		html = render_template('mastarAuthorityList.html', data=data, form=form)
+		if result == "Complate":
+			html = render_template('mastarAuthorityList.html', data=data, form=form)
+		else:
+			message["state"] = "Error"
+			message["message"] = result
+			html = render_template('errorPage.html', message=message)
 	else:
-		message["state"] = "Error"
-		message["message"] = result
-		html = render_template('errorPage.html', message=message)
+		html = redirect(url_for('mastar'))
 
 	return html
 
@@ -431,73 +532,82 @@ def authorityEdit():
 		"message": ""
 	}
 
-	if request.method == "POST":
+	if login_admin_user_check(session):
+		if request.method == "POST":
 
-		if request.form["state"] == "SHOW":
-			form = authorityEditShowValidate.AuthorityEditShowValidate()
+			if request.form["state"] == "SHOW":
+				form = authorityEditShowValidate.AuthorityEditShowValidate()
 
-			if form.validate_on_submit() == False:
-				message["state"] = "Error"
-				message["message"] += form.user_id.errors
-				message["message"] += form.group_folder_id.errors
-				return redirect(url_for("authorityList"))
-		else:
-			form = authorityEditUpdValidate.AuthorityEditUpdValidate()
+				if form.validate_on_submit() == False:
+					message["state"] = "Error"
+					message["message"] += form.user_id.errors
+					message["message"] += form.group_folder_id.errors
+					return redirect(url_for("authorityList"))
+			else:
+				form = authorityEditUpdValidate.AuthorityEditUpdValidate()
 
-			if form.validate_on_submit():
+				if form.validate_on_submit():
 
-				if form.state.data == 'NEW':
-					result, form.user_id.data, form.group_folder_id.data = model.insertAuthority(form)
+					if form.state.data == 'NEW':
+						result, form.user_id.data, form.group_folder_id.data = model.insertAuthority(form)
 
-				elif form.state.data == 'UPD':
-					result = model.upadteAuthority(form)
+					elif form.state.data == 'UPD':
+						result = model.upadteAuthority(form)
 
-				elif form.state.data == 'DEL':
-					result = model.delateAuthority(form)
-					form.user_id.data = '0'
-					form.group_folder_id.data = '0'
+					elif form.state.data == 'DEL':
+						result = model.delateAuthority(form)
+						form.user_id.data = '0'
+						form.group_folder_id.data = '0'
 
-				if result != "Complate":
+					if result != "Complate":
+						message["state"] = "Error"
+						message["message"] = result
+
+				else:
+					message["state"] = "Error"
+					for error in form.user_id.errors:
+						message["message"] += error + "<br>"
+					for error in form.group_folder_id.errors:
+						message["message"] += error + "<br>"
+
+			# User List
+			user_model = userModel.UserModel()
+			user_list, message = user_model.getSelectList()
+			# GroupFolder List
+			groupFolder_model = groupFolderModel.GroupFolderModel()
+			groupFolder_list, message = groupFolder_model.getSelectList()
+
+			if form.user_id.data != '0' or form.group_folder_id.data != '0':
+				data, result = model.selectAuthority(form)
+				state_bit = []
+
+				if result == "Complate":
+					for shift in range(0, 5):
+						if (int(data[0][2])>>shift) & 1:
+							state_bit.append(True)
+						else:
+							state_bit.append(False)
+
+					html = render_template('mastarAuthorityEdit.html', data=data[0], user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit, form=form)
+
+				else:
 					message["state"] = "Error"
 					message["message"] = result
-
+					html = render_template('mastarAuthorityEdit.html', data=data[0], user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit, form=form)
 			else:
-				message["state"] = "Error"
-				for error in form.user_id.errors:
-					message["message"] += error + "<br>"
-				for error in form.group_folder_id.errors:
-					message["message"] += error + "<br>"
-
-		# User List
-		user_model = userModel.UserModel()
-		user_list, message = user_model.getSelectList()
-		# GroupFolder List
-		groupFolder_model = groupFolderModel.GroupFolderModel()
-		groupFolder_list, message = groupFolder_model.getSelectList()
-
-		if form.user_id.data != '0' or form.group_folder_id.data != '0':
-			data, result = model.selectAuthority(form)
-			state_bit = []
-
-			if result == "Complate":
-				for shift in range(0, 5):
-					if (int(data[0][2])>>shift) & 1:
-						state_bit.append(True)
-					else:
-						state_bit.append(False)
-
-				html = render_template('mastarAuthorityEdit.html', data=data[0], user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit, form=form)
-
-			else:
-				message["state"] = "Error"
-				message["message"] = result
-				html = render_template('mastarAuthorityEdit.html', data=data[0], user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit, form=form)
-		else:
-			data = ['', '', '', '', '', '']
-			state_bit = [False, False, False, False, False]
-			html = render_template('mastarAuthorityEdit.html', data=data, user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit,form=form)
+				data = ['', '', '', '', '', '']
+				state_bit = [False, False, False, False, False]
+				html = render_template('mastarAuthorityEdit.html', data=data, user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit,form=form)
+	else:
+		html = redirect(url_for('mastar'))
 
 	return html
+
+@app.route('/mastar/logout', methods=['GET', 'POST'])
+def logout():
+	session.pop('admin_user_id', None)
+	session.pop('admin_user_login_id', None)
+	return redirect(url_for('mastar'))
 
 # =====================================================================================================================================================================================================
 # Plugin

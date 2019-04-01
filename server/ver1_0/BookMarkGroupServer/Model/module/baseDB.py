@@ -6,7 +6,7 @@ import datetime
 class BaseDB:
 	"""
 	Connect to the database and create and execute SQL for each processing.
-	
+
 	Attributes
 	----------
 	__user : str
@@ -26,10 +26,10 @@ class BaseDB:
 
 	def __init__(self):
 		"""Set attributes."""
-		self.__user = "root"
+		self.__user = ""
 		self.__password = ""
-		self.__host = "localhost"
-		self.__db = "bookmarkgroup"
+		self.__host = ""
+		self.__db = ""
 		self.__conn = None
 		self.__cur = None
 
@@ -37,14 +37,14 @@ class BaseDB:
 		"""Connect to the database."""
 		self.__conn = mysql.connector.connect(user=self.__user, password=self.__password, host=self.__host, db=self.__db)
 		self.__cur = self.__conn.cursor()
-		return 
+		return
 
 	def finishConnect(self):
 		"""Disconnect to the database."""
 		self.__cur.close
 		self.__conn.close
 		return
-		
+
 	def selectExecute(self, sql, condition_value):
 		"""
 		Execute the SELECT statement.
@@ -215,7 +215,7 @@ class BaseDB:
 		----------
 		sql : str
 			INSERT statement
-			
+
 		"""
 		sql_key = "("
 		sql_value = "("
@@ -233,7 +233,7 @@ class BaseDB:
 
 		sql = "INSERT INTO " + table_info["table"] + sql_key + "VALUES" + sql_value
 		return sql
-		
+
 	def createUpdateSql(self, table_info):
 		"""
 		Create UPDATE statement.
@@ -247,7 +247,7 @@ class BaseDB:
 		----------
 		sql : str
 			UPDATE statement
-			
+
 		"""
 		sql_where = ""
 		sql_value = ""
@@ -284,7 +284,7 @@ class BaseDB:
 		----------
 		sql : str
 			DELATE statement
-			
+
 		"""
 		sql_where = ""
 
@@ -318,6 +318,6 @@ class BaseDB:
 		----------
 		datetime : str
 			Current time
-			
+
 		"""
 		return datetime.datetime.now()

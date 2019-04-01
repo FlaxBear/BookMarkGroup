@@ -33,8 +33,8 @@ class AdminUserModel(baseDB.BaseDB):
 		insert_value = self.createRequestSqlValue(form, self.table_info, "insert")
 
 		insert_value["admin_user_id"], message = numbering_class.getNextValue("admin_user_id")
-		insert_value["admin_create_time"] = self.create_time()
-		insert_value["admin_update_time"] = self.create_time()
+		insert_value["create_time"] = self.create_time()
+		insert_value["update_time"] = self.create_time()
 		insert_value["admin_user_password"] = self.safty_password(insert_value["admin_user_id"], insert_value["admin_user_password"])
 
 		insert_sql = self.createInsertSql(self.table_info)
@@ -107,7 +107,7 @@ class AdminUserModel(baseDB.BaseDB):
 				sql_where += key + "=%(" + key + ")s"
 			else:
 				if(table_info["param"][key]["update"] == "YES"):
-					if(key == "user_password"):
+					if(key == "admin_user_password"):
 						if password_state == True:
 							sql_value += key + "=%(" + key + ")s,"
 					else:
