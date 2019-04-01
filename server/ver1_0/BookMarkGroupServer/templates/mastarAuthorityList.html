@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- ===== 基本設定 ===== -->
+	<!-- ===== Basic Setting ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用権限一覧</title>
+	<title>Authority List</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
@@ -35,6 +35,9 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
 			document.authorityList.state.value = "SHOW";
@@ -42,47 +45,51 @@
 			document.authorityList.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== Basic Setting ===== -->
 </head>
 
 <body>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 	<div id="page">
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用権限一覧</h1>
+			<h1 id="siteTitle">Authority List</h1>
 			<nav class="globalNavi">
 				<ul>
-					<li><a onclick="jump_list('0');">メニュー</a></li>
-					<li><a onclick="jump_list('1');">採番一覧</a></li>
-					<li><a onclick="jump_list('2');">ユーザ一覧</a></li>
-					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
-					<li><a onclick="jump_list('4');">権限一覧</a></li>
+					<li><a onclick="jump_list('0');">Menu</a></li>
+					<li><a onclick="jump_list('5');">Administrator User List</a></li>
+					<li><a onclick="jump_list('1');">Numbering List</a></li>
+					<li><a onclick="jump_list('2');">User List</a></li>
+					<li><a onclick="jump_list('3');">Group Folder List</a></li>
+					<li><a onclick="jump_list('4');">Authority List</a></li>
 				</ul>
 			</nav>
 		</header>
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 		<div id="pageBody">
 			<form method="POST" name="authorityList">
-				{{ form.hidden_tag() }}
-				<button type="button" name="createAuthority" onclick="jump_edit('0', '0');">新規作成</button>
-				<table>
+				{{ form.csrf_token() }}
+				<input type="hidden" name="state" value="">
+				<input type="hidden" name="user_id" value="">
+				<input type="hidden" name="group_folder_id" value="">
+				<button type="button" class="createData" onclick="jump_edit('0', '0');">Create</button>
+				<table class="list">
 					<thead>
 						<tr>
 							<th>&nbsp;</th>
-							<th>ID:ユーザ名</th>
-							<th>ID:グループフォルダー名</th>
-							<th>権限状態</th>
-							<th>作成日時</th>
-							<th>更新日時</th>
+							<th>ID:User Name</th>
+							<th>ID:Group Folder Name</th>
+							<th>Authorization status</th>
+							<th>Create Time</th>
+							<th>Update Time</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for value in data %}
 							<tr>
-								<td><button type="button" name="updateAuthority" onclick="jump_edit('{{value[0]}}', '{{value[1]}}');">更新</button></td>
+								<td><button type="button" class="updateData" onclick="jump_edit('{{value[0]}}', '{{value[1]}}');">Show</button></td>
 								<td>{{value[0]}}:{{value[2]}}</td>
 								<td>{{value[1]}}:{{value[3]}}</td>
 								<td>{{value[4]}}</td>
@@ -94,15 +101,15 @@
 				</table>
 			</form>
 		</div>
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 
-		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
-		<!-- ===== フッダー情報 ===== -->
+		<p class="pagetop"><a href="#page">Back Page Top</a></p>
+		<!-- ===== Footer ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
 		</footer>
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 	</div>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 </body>
 </html>

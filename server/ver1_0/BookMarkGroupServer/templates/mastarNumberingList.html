@@ -4,15 +4,15 @@
 	<!-- ===== 基本設定 ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用グループフォルダー一覧</title>
+	<title>管理者用採番一覧</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
 		function jump_edit(id) {
-			document.groupFolderList.group_folder_id.value = id;
-			document.groupFolderList.state.value = "SHOW";
-			document.groupFolderList.action  = "/mastar/groupFolderEdit";
-			document.groupFolderList.submit();
+			document.numberingList.numbering_id.value = id;
+			document.numberingList.state.value = "SHOW";
+			document.numberingList.action = "/mastar/numberingEdit";
+			document.numberingList.submit();
 		}
 
 		function jump_list(list_id) {
@@ -34,47 +34,51 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
-			document.groupFolderList.state.value = "SHOW";
-			document.groupFolderList.action=action_url;
-			document.groupFolderList.submit();
+			document.numberingList.state.value = "SHOW";
+			document.numberingList.action=action_url;
+			document.numberingList.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== 基本情報 ===== -->
 </head>
 <body>
 	<!-- ===== ページ全体 ===== -->
 	<div id="page">
 		<!-- ===== ヘッダー情報 ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用グループフォルダー一覧</h1>
+			<h1 id="siteTitle">管理者用採番一覧</h1>
 			<nav class="globalNavi">
-					<ul>
-						<li><a onclick="jump_list('0');">メニュー</a></li>
-						<li><a onclick="jump_list('1');">採番一覧</a></li>
-						<li><a onclick="jump_list('2');">ユーザ一覧</a></li>
-						<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
-						<li><a onclick="jump_list('4');">権限一覧</a></li>
-					</ul>
+				<ul>
+					<li><a onclick="jump_list('0');">メニュー</a></li>
+					<li><a onclick="jump_list('5');">管理者ユーザ一覧</a></li>
+					<li><a onclick="jump_list('1');">採番一覧</a></li>
+					<li><a onclick="jump_list('2');">ユーザ一覧</a></li>
+					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
+					<li><a onclick="jump_list('4');">権限一覧</a></li>
+				</ul>
 			</nav>
 		</header>
 		<!-- ===== ヘッダー情報 ===== -->
 
 		<!-- ===== コンテンツ ===== -->
 		<div id="pageBody">
-			<form method="POST" name="groupFolderList">
-				{{ form.hidden_tag() }}
-				<button type="button" name="createGroupFolder" onclick="jump_edit('0');">新規作成</button>
+			<form method="POST" name="numberingList">
+				{{ form.csrf_token() }}
+				<input type="hidden" name="state" value="">
+				<input type="hidden" name="numbering_id" value="">
+				<button type="button" name="createNumbering" onclick="jump_edit('0');">新規作成</button>
 				<table>
 					<thead>
 						<tr>
 							<th>&nbsp;</th>
-							<th>グループフォルダーID</th>
-							<th>グループフォルダー名</th>
-							<th>グループフォルダーバージョン</th>
-							<th>JSONフォルダーパス</th>
-							<th>グループフォルダーメモ</th>
+							<th>採番ID</th>
+							<th>カラム名</th>
+							<th>次回値</th>
 							<th>作成日時</th>
 							<th>更新日時</th>
 						</tr>
@@ -82,7 +86,7 @@
 					<tbody>
 						{% for value in data %}
 							<tr>
-								<td><button type="button" name="updateGroupFolder" onclick="jump_edit('{{value[0]}}');">更新</button></td>
+								<td><button type="button" name="updateNumbering" onclick="jump_edit('{{value[0]}}');">更新</button></td>
 								{% for test in value %}
 									<td>{{test}}</td>
 								{% endfor %}

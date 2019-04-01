@@ -34,6 +34,9 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
 			document.userList.state.value = "SHOW";
@@ -41,59 +44,62 @@
 			document.userList.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== 基本情報 ===== -->
 </head>
 <body>
 	<!-- ===== ページ全体 ===== -->
 	<div id="page">
-		<!-- ===== ヘッダー情報 ===== -->
-		<header id="pageHead">
-			<h1 id="siteTitle">管理者用ユーザ一覧</h1>
-			<nav class="globalNavi">
+			<!-- ===== ヘッダー情報 ===== -->
+			<header id="pageHead">
+				<h1 id="siteTitle">管理者用ユーザ一覧</h1>
+				<nav class="globalNavi">
 					<ul>
 						<li><a onclick="jump_list('0');">メニュー</a></li>
+						<li><a onclick="jump_list('5');">管理ユーザ一覧</a></li>
 						<li><a onclick="jump_list('1');">採番一覧</a></li>
 						<li><a onclick="jump_list('2');">ユーザ一覧</a></li>
 						<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
 						<li><a onclick="jump_list('4');">権限一覧</a></li>
 					</ul>
-			</nav>
-		</header>
-		<!-- ===== ヘッダー情報 ===== -->
+				</nav>
+			</header>
+			<!-- ===== ヘッダー情報 ===== -->
 
-		<!-- ===== コンテンツ ===== -->
-		<div id="pageBody">
-			<form method="POST" name="userList">
-				{{ form.hidden_tag() }}
-				<button type="button" name="createUser" onclick="jump_edit('0');">新規作成</button>
-				<table>
-					<thead>
-						<tr>
-							<th>&nbsp;</th>
-							<th>ユーザID</th>
-							<th>ユーザ名</th>
-							<th>ユーザメールアドレス</th>
-							<th>パスワード</th>
-							<th>作成日時</th>
-							<th>更新日時</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for value in data %}
+			<!-- ===== コンテンツ ===== -->
+			<div id="pageBody">
+				<form method="POST" name="userList">
+					{{ form.csrf_token() }}
+					<input type="hidden" name="state" value="">
+					<input type="hidden" name="user_id" value="">
+					<button type="button" onclick="jump_edit('0');">新規作成</button>
+					<table>
+						<thead>
 							<tr>
-								<td><button type="button" name="updateUser" onclick="jump_edit('{{value[0]}}');">更新</button></td>
-								{% for test in value %}
-									<td>{{test}}</td>
-								{% endfor %}
+								<th>&nbsp;</th>
+								<th>ユーザID</th>
+								<th>ユーザ名</th>
+								<th>ユーザメールアドレス</th>
+								<th>パスワード</th>
+								<th>作成日時</th>
+								<th>更新日時</th>
 							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</form>
-		</div>
-		<!-- ===== コンテンツ ===== -->
+						</thead>
+						<tbody>
+							{% for user_data in data %}
+								<tr>
+									<td><button type="button" onclick="jump_edit('{{user_data[0]}}');">更新</button></td>
+									{% for data in user_data %}
+										<td>{{data}}</td>
+									{% endfor %}
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<!-- ===== コンテンツ ===== -->
 
-		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
+			<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
 		<!-- ===== フッダー情報 ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
@@ -103,3 +109,4 @@
 	<!-- ===== ページ全体 ===== -->
 </body>
 </html>
+

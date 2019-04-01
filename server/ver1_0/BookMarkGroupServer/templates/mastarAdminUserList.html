@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ===== Basic Setting ===== -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Administrator User List</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
+	<script type="text/javascript">
+		function jump_edit(id) {
+			document.adminUserList.admin_user_id.value = id;
+			document.adminUserList.state.value = "SHOW";
+			document.adminUserList.action  = "/mastar/adminUserEdit";
+			document.adminUserList.submit();
+		}
+
+		function jump_list(list_id) {
+			var action_url = '';
+
+			switch(list_id) {
+				case '0':
+					action_url = "/mastar/menu";
+					break;
+				case '1':
+					action_url = "/mastar/numberingList";
+					break;
+				case '2':
+					action_url = "/mastar/userList";
+					break;
+				case '3':
+					action_url = "/mastar/groupFolderList";
+					break;
+				case '4':
+					action_url = "/mastar/authorityList";
+					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
+			}
+
+			document.adminUserList.state.value = "SHOW";
+			document.adminUserList.action=action_url;
+			document.adminUserList.submit();
+		}
+	</script>
+	<!-- ===== Basic Setting ===== -->
+</head>
+<body>
+	<!-- ===== Page ===== -->
+	<div id="page">
+		<!-- ===== Head ===== -->
+		<header id="pageHead">
+			<h1 id="siteTitle">Administrator User List</h1>
+			<nav class="globalNavi">
+				<ul>
+					<li><a onclick="jump_list('0');">Menu</a></li>
+					<li><a onclick="jump_list('5');">Administrator User List</a></li>
+					<li><a onclick="jump_list('1');">Numbering List</a></li>
+					<li><a onclick="jump_list('2');">User List</a></li>
+					<li><a onclick="jump_list('3');">Group Folder List</a></li>
+					<li><a onclick="jump_list('4');">Authority List</a></li>
+				</ul>
+			</nav>
+		</header>
+		<!-- ===== Head ===== -->
+
+		<!-- ===== Content ===== -->
+		<div id="pageBody">
+			<form method="POST" name="adminUserList">
+				{{ form.csrf_token() }}
+				<input type="hidden" name="state" value="">
+				<input type="hidden" name="admin_user_id" value="">
+				<button type="button" class="createData" onclick="jump_edit('0');">Create</button>
+				<table class="list">
+					<thead>
+						<tr>
+							<th>&nbsp;</th>
+							<th>Admin User ID</th>
+							<th>User Name</th>
+							<th>Login ID</th>
+							<th>Password</th>
+							<th>Create Time</th>
+							<th>Update Time</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for value in data %}
+							<tr>
+								<td><button type="button" class="updateData" onclick="jump_edit('{{value[0]}}');">Show</button></td>
+								{% for value2 in value %}
+									<td>{{value2}}</td>
+								{% endfor %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<!-- ===== Content ===== -->
+
+		<p class="pagetop"><a href="#page">Back Page Top</a></p>
+		<!-- ===== Footer ===== -->
+		<footer id="pageFoot">
+			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
+		</footer>
+		<!-- ===== Footer ===== -->
+	</div>
+	<!-- ===== Page ===== -->
+</body>
+</html>

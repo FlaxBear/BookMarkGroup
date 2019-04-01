@@ -4,12 +4,14 @@
 	<!-- ===== 基本設定 ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用採番編集</title>
+	<title>管理者用管理ユーザ編集</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
 		function jump_upd(id, state) {
-			document.numberingEdit.numbering_id.value = id;
-			document.numberingEdit.state.value = state;
-			document.numberingEdit.submit();
+			document.userEdit.admin_user_id.value = id;
+			document.userEdit.state.value = state;
+			document.userEdit.submit();
 		}
 
 		function jump_list(list_id) {
@@ -31,24 +33,28 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
-			document.numberingEdit.state.value = "SHOW";
-			document.numberingEdit.action=action_url;
-			document.numberingEdit.submit();
+			document.userEdit.state.value = "SHOW";
+			document.userEdit.action=action_url;
+			document.userEdit.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== 基本情報 ===== -->
 </head>
 <body>
 	<!-- ===== ページ全体 ===== -->
 	<div id="page">
 		<!-- ===== ヘッダー情報 ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用採番編集</h1>
+			<h1 id="siteTitle">管理者用ユーザ編集</h1>
 			<nav class="globalNavi">
 				<ul>
 					<li><a onclick="jump_list('0');">メニュー</a></li>
+					<li><a onclick="jump_list('5');">管理ユーザ一覧</a></li>
 					<li><a onclick="jump_list('1');">採番一覧</a></a></li>
 					<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
 					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
@@ -60,29 +66,30 @@
 
 		<!-- ===== コンテンツ ===== -->
 		<div id="pageBody">
-			<form method="POST" name="numberingEdit">
+			<form method="POST" name="userEdit">
 				{{ form.hidden_tag() }}
-				{% if form.numbering_id.data == '0' %}
-					<button type="button" name="createNumbering" onclick="jump_upd('0', 'NEW');">作成</button>
+				{% if form.user_id.data == '0' %}
+					<button type="button" name="createAdminUser" onclick="jump_upd('0', 'NEW');">作成</button>
 				{% else %}
-					<button type="button" name="createNumbering" onclick="jump_upd('{{form.numbering_id.data}}', 'UPD');">更新</button>
-					<button type="button" name="delateNumbering" onclick="jump_upd('{{form.numbering_id.data}}', 'DEL');">削除</button>
+					<button type="button" name="createAdminUser" onclick="jump_upd('{{form.user_id.data}}', 'UPD');">更新</button>
+					<button type="button" name="delateAdminUser" onclick="jump_upd('{{form.user_id.data}}', 'DEL');">削除</button>
 				{% endif %}
-					<button type="button" name="backNumbering" onclick="jump_list('1');">戻る</button>
-	
+					<button type="button" name="backAdminUser" onclick="jump_list('2');">戻る</button>
+
 				<table>
 					<tbody>
-						<tr><td>採番ID</td><td>{{data[0]}}</td></tr>
-						<tr><td>カラム名</td><td><input type="text" name="numbering_name" value="{{data[1]}}"></td></tr>
-						<tr><td>次回値</td><td><input type="text" name="next_value" value="{{data[2]}}"></td></tr>
-						<tr><td>作成日時</td><td>{{data[3]}}</td></tr>
-						<tr><td>更新日時</td><td>{{data[4]}}</td></tr>
+						<tr><td>ユーザID</td><td>{{data[0]}}</td></tr>
+						<tr><td>ユーザ名</td><td><input type="text" name="user_name" value="{{data[1]}}"></td></tr>
+						<tr><td>メールアドレス</td><td><input type="text" name="user_mail_address" value="{{data[2]}}"></td></tr>
+						<tr><td>パスワード</td><td><input type="password" name="user_password" value="{{data[3]}}"></td></tr>
+						<tr><td>作成日時</td><td>{{data[4]}}</td></tr>
+						<tr><td>更新日時</td><td>{{data[5]}}</td></tr>
 					</tbody>
 				</table>
 			</form>
 		</div>
 		<!-- ===== コンテンツ ===== -->
-		
+
 		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
 		<!-- ===== フッダー情報 ===== -->
 		<footer id="pageFoot">
@@ -90,5 +97,6 @@
 		</footer>
 		<!-- ===== フッダー情報 ===== -->
 	</div>
+	<!-- ===== ページ全体 ===== -->
 </body>
 </html>

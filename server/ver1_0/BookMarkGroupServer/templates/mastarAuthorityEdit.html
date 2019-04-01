@@ -48,6 +48,9 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
 			document.authorityEdit.state.value = "SHOW";
@@ -55,7 +58,7 @@
 			document.authorityEdit.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== 基本情報 ===== -->
 </head>
 <body>
 	<!-- ===== ページ全体 ===== -->
@@ -66,6 +69,7 @@
 			<nav class="globalNavi">
 				<ul>
 					<li><a onclick="jump_list('0');">メニュー</a></li>
+					<li><a onclick="jump_list('5');">管理者ユーザ一覧</a></li>
 					<li><a onclick="jump_list('1');">採番一覧</a></a></li>
 					<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
 					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
@@ -109,7 +113,7 @@
 										{% endif %}
 									{% endfor %}
 								{% endif %}
-								
+
 							</td>
 						</tr>
 						<tr>
@@ -144,31 +148,31 @@
 										{% else %}
 											<tr><td>マスター権限</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
-	
+
 										{% if state_bit[3] == True %}
 											<tr><td>グループユーザの追加、削除</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
 											<tr><td>グループユーザの追加、削除</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
-	
+
 										{% if state_bit[2] == True %}
 											<tr><td>ブックマーク削除</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
 											<tr><td>ブックマーク削除</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
-										
+
 										{% if state_bit[1] == True %}
 											<tr><td>ブックマーク内容の編集</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
 											<tr><td>ブックマーク内容の編集</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
-	
+
 										{% if state_bit[0] == True %}
 											<tr><td>ブックマーク追加</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
 											<tr><td>ブックマーク追加</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
-	
+
 									</tbody>
 								</table>
 							</td>
@@ -180,7 +184,7 @@
 			</form>
 		</div>
 		<!-- ===== コンテンツ ===== -->
-		
+
 		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
 		<!-- ===== フッダー情報 ===== -->
 		<footer id="pageFoot">

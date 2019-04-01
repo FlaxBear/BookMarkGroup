@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ===== Basic Setting ===== -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Adminstrator Login</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
+	<script type="text/javascript">
+		function jump_login() {
+			document.login.submit();
+		}
+	</script>
+	<!-- ===== Basic Setting ===== -->
+</head>
+<body>
+	<!-- ===== Page ===== -->
+	<div id="page">
+		<!-- ===== Head ===== -->
+		<header id="pageHead">
+			<h1 id="siteTitle">Adminstrator Login</h1>
+		</header>
+		<!-- ===== Head ===== -->
+
+		<!-- ===== Content ===== -->
+		<div id="pageBody">
+			<form method="POST" name="login">
+				{{ form.csrf_token() }}
+				{% if message != '' %}
+					<div class="error_message">
+						{{data}}
+					</div>
+				{% endif %}
+				<table>
+					<tbody>
+						<tr>
+							<th>Login ID</th>
+							<th><input type="text" name="admin_user_login_id"></th>
+						</tr>
+						<tr>
+							<th>PassWord</th>
+							<th><input type="password" name="admin_user_password"></th>
+						</tr>
+						<tr>
+							<th><button type="button" onclick="jump_login();">Login</button></th>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<!-- ===== Content ===== -->
+
+		<!-- ===== Footer ===== -->
+		<footer id="pageFoot">
+			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
+		</footer>
+		<!-- ===== Footer ===== -->
+	</div>
+	<!-- ===== Page ===== -->
+</body>
+</html>

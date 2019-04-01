@@ -33,6 +33,9 @@
 				case '4':
 					action_url = "/mastar/authorityList";
 					break;
+				case '5':
+					action_url = "/mastar/adminUserList";
+					break;
 			}
 
 			document.groupFolderEdit.state.value = "SHOW";
@@ -40,7 +43,7 @@
 			document.groupFolderEdit.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== --> 
+	<!-- ===== 基本情報 ===== -->
 </head>
 <body>
 	<!-- ===== ページ全体 ===== -->
@@ -51,6 +54,7 @@
 			<nav class="globalNavi">
 				<ul>
 					<li><a onclick="jump_list('0');">メニュー</a></li>
+					<li><a onclick="jump_list('5');">管理者ユーザ一覧</a></li>
 					<li><a onclick="jump_list('1');">採番一覧</a></a></li>
 					<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
 					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
@@ -59,7 +63,7 @@
 			</nav>
 		</header>
 		<!-- ===== ヘッダー情報 ===== -->
-	
+
 		<!-- ===== コンテンツ ===== -->
 		<div id="pageBody">
 			<form method="POST" name="groupFolderEdit">

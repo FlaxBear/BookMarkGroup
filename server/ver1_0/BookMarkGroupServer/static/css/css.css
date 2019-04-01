@@ -16,7 +16,7 @@ body {
 	position: reslative;
 	top: 0;
 	left: 0;
-	
+
 	width: auto;
 	height: auto;
 }
@@ -26,9 +26,10 @@ body {
 	position: relative;
 	top: 0px;
 	left: 0px;
-	
+
 }
 
+/* タイトル */
 #pageHead #siteTitle {
 	font-size: 30px;
 	line-height: 1.2;
@@ -41,9 +42,9 @@ body {
 
 /* コンテンツ */
 
-/* 管理者用メニュー */
+/* 管理者用メニュー画面 */
 /* ボタン */
-#pageBody button.menuButton {
+#pageBody table.menuTable button.menuButton {
 	padding: 50px 0px;
 	margin: 20px;
 	width: 350px;
@@ -51,7 +52,36 @@ body {
 }
 
 /* ボタン名 */
-#pageBody button.menuButton #buttonName {
+#pageBody table.menuTable button.menuButton #buttonName {
 	font-size: 1.4em;
 	font-weight: bold;
+}
+
+/* 管理者用マスタ一覧画面　*/
+/* 新規作成ボタン */
+#pageBody button.createData {
+	padding: 10px 0px;
+	margin: 10px 20px;
+	width: 100px;
+	background: #bee0c2;
+}
+
+/* テーブル外枠線 */
+#pageBody table.list,
+#pageBody table.list tr td,
+#pageBody table.list tr th{
+	border: 1px #2b2b2b solid;
+	border-collapse: collapse;
+}
+
+/* テーブル色 */
+#pageBody table thead tr {
+	background: #d6c6af;
+	color: #696969;
+}
+
+/* 更新ボタン */
+#pageBody table tbody tr td button.updateData {
+	padding: 10px 0px;
+	background: #bee0c2;
 }
