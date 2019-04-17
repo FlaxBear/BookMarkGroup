@@ -74,3 +74,24 @@ class AuthorityModel(baseDB.BaseDB):
 		self.finishConnect()
 
 		return select_data, message
+
+	def getFolderAuthority(self, group_folder_id):
+		delate_value = {
+			"group_folder_id": group_folder_id
+		}
+		#select_sql = """SELECT * FROM authority WHERE group_folder_id=%(group_folder_id)s"""
+		select_sql = """
+					 SELECT t1.user_id, t2.user_name, t1.authority_state
+					 , t1.create_time, t1.update_time
+					 , t3.group_folder_name
+					 FROM authority t1
+					 INNER JOIN user t2 ON t1.user_id = t2.user_id
+					 INNER JOIN group_folder t3 ON t1.group_folder_id = t3.group_folder_id
+					 WHERE t1.group_folder_id=%(group_folder_id)s
+					"""
+
+		self.startConnect()
+		select_data, message = self.selectExecute(select_sql, delate_value)
+		self.finishConnect()
+
+		return select_data, message

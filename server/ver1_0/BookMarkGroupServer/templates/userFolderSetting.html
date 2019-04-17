@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ===== Basic Setting ===== -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Administrator Menu</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
+	<script type="text/javascript"></script>
+<!-- ===== Basic Setting ===== -->
+</head>
+<body>
+	<!-- ===== Page ===== -->
+	<div id="page">
+		<!-- ===== Head ===== -->
+		<header id="pageHead">
+			<h1 id="siteTitle">{{data[0][5]}}</h1>
+		</header>
+		<!-- ===== Head ===== -->
+
+		<!-- ===== Content ===== -->
+		<div id="pageBody">
+			<div id="add_user">
+
+				<h2>追加ユーザ</h2>
+				<h3>メールアドレス</h3>
+				<form method="POST" name="newUser">
+					{{ form.csrf_token() }}
+					<input type="text" name="add_user_mail_address">
+					<button type="button" onclick="">Add</button>
+				</form>
+			</div>
+
+			<div id="user_list">
+				<h2>ユーザ一覧</h2>
+				<form method="POST" name="userList">
+					{{ form.csrf_token() }}
+					<table class="list">
+						<thead>
+							<tr>
+								<th>User Name</th>
+								<th>Authorization State</th>
+								<th>Delete</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for value in data %}
+								<tr>
+									<td>
+										<input type="hidden" name="user_id[]" value="{{value[0]}}">
+										{{value[1]}}
+									</td>
+									<td>
+										<table>
+										{% for key in state_bit %}
+											{% if key == value[0] %}
+
+												<tr><td>マスター権限</td><td>
+													{% if state_bit[key][4] == True %}
+														<input type="checkbox" name="check_authority_state" onClick="" checked>
+													{% else %}
+														<input type="checkbox" name="check_authority_state" onClick="">
+													{% endif %}
+												</td></tr>
+
+												<tr><td>グループユーザの追加、削除</td><td>
+													{% if state_bit[key][3] == True %}
+														<input type="checkbox" name="check_authority_state" onClick="" checked>
+													{% else %}
+														<input type="checkbox" name="check_authority_state" onClick="">
+													{% endif %}
+												</td></tr>
+
+												<tr><td>ブックマーク削除</td><td>
+													{% if state_bit[key][2] == True %}
+														<input type="checkbox" name="check_authority_state" onClick="" checked>
+													{% else %}
+														<input type="checkbox" name="check_authority_state" onClick="">
+													{% endif %}
+												</td></tr>
+
+												<tr><td>ブックマーク内容の編集</td><td>
+													{% if state_bit[key][1] == True %}
+														<input type="checkbox" name="check_authority_state" onClick="" checked>
+													{% else %}
+														<input type="checkbox" name="check_authority_state" onClick="">
+													{% endif %}
+												</td></tr>
+
+												<tr><td>ブックマーク追加</td><td>
+													{% if state_bit[key][0] == True %}
+														<input type="checkbox" name="check_authority_state" onClick="" checked>
+													{% else %}
+														<input type="checkbox" name="check_authority_state" onClick="">
+													{% endif %}
+												</td></tr>
+											{% endif %}
+										{% endfor %}
+										</table>
+									</td>
+									<td><input type="checkbox" name="del_user[]" value="{{value[0]}}"></td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					<button type="button" name="update_button" onclick="">Update</button>
+				</form>
+			</div>
+		</div>
+		<!-- ===== Content ===== -->
+
+		<!-- ===== Footer ===== -->
+		<footer id="pageFoot">
+			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
+		</footer>
+		<!-- ===== Footer ===== -->
+	</div>
+	<!-- ===== Page ===== -->
+</body>
+</html>

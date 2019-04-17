@@ -85,3 +85,34 @@ body {
 	padding: 10px 0px;
 	background: #bee0c2;
 }
+
+/* 管理者用マスタ編集画面 */
+
+/* 新規作成ボタン */
+/* 更新ボタン */
+/* 削除ボタン */
+#pageBody button.editButton {
+	padding: 10px 0px;
+	margin: 10px 20px;
+	width: 100px;
+	background: #bee0c2;
+}
+
+/* テーブル外枠線 */
+#pageBody table.editList,
+#pageBody table.editList tr td,
+#pageBody table.editList tr th{
+	border: 1px #2b2b2b solid;
+	border-collapse: collapse;
+}
+
+/* 編集データテーブル項目 */
+#pageBody table.editList tbody td:nth-child(odd) {
+	background: #d6c6af;
+	line-height: 30px;
+}
+
+#pageBody table.stateList tbody td:nth-child(odd) {
+	background: #C0C0C0;
+	line-height: 30px;
+}

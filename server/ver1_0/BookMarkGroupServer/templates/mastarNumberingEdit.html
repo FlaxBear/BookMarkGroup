@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- ===== 基本設定 ===== -->
+	<!-- ===== Basic Setting ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用採番編集</title>
+	<title>Adminstrator Numbering Edit</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
 		function jump_upd(id, state) {
 			document.numberingEdit.numbering_id.value = id;
@@ -41,58 +43,58 @@
 			document.numberingEdit.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== -->
+	<!-- ===== Basic Setting ===== -->
 </head>
 <body>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 	<div id="page">
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用採番編集</h1>
+			<h1 id="siteTitle">Adminstrator Numbering Edit</h1>
 			<nav class="globalNavi">
 				<ul>
-					<li><a onclick="jump_list('0');">メニュー</a></li>
-					<li><a onclick="jump_list('5');">管理者ユーザ一覧</a></li>
-					<li><a onclick="jump_list('1');">採番一覧</a></a></li>
-					<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
-					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
-					<li><a onclick="jump_list('4');">権限一覧</a></li>
+					<li><a onclick="jump_list('0');">Menu</a></li>
+					<li><a onclick="jump_list('5');">Administrator User List</a></li>
+					<li><a onclick="jump_list('1');">Numbering List</a></li>
+					<li><a onclick="jump_list('2');">User List</a></li>
+					<li><a onclick="jump_list('3');">Group Folder List</a></li>
+					<li><a onclick="jump_list('4');">Authority List</a></li>
 				</ul>
 			</nav>
 		</header>
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 		<div id="pageBody">
 			<form method="POST" name="numberingEdit">
 				{{ form.hidden_tag() }}
 				{% if form.numbering_id.data == '0' %}
-					<button type="button" name="createNumbering" onclick="jump_upd('0', 'NEW');">作成</button>
+					<button type="button" class="editButton" onclick="jump_upd('0', 'NEW');">Create</button>
 				{% else %}
-					<button type="button" name="createNumbering" onclick="jump_upd('{{form.numbering_id.data}}', 'UPD');">更新</button>
-					<button type="button" name="delateNumbering" onclick="jump_upd('{{form.numbering_id.data}}', 'DEL');">削除</button>
+					<button type="button" class="editButton" onclick="jump_upd('{{form.numbering_id.data}}', 'UPD');">Update</button>
+					<button type="button" class="editButton" onclick="jump_upd('{{form.numbering_id.data}}', 'DEL');">Delete</button>
 				{% endif %}
-					<button type="button" name="backNumbering" onclick="jump_list('1');">戻る</button>
+					<button type="button" class="editButton" onclick="jump_list('1');">Back</button>
 
-				<table>
+				<table class="editList">
 					<tbody>
-						<tr><td>採番ID</td><td>{{data[0]}}</td></tr>
-						<tr><td>カラム名</td><td><input type="text" name="numbering_name" value="{{data[1]}}"></td></tr>
-						<tr><td>次回値</td><td><input type="text" name="next_value" value="{{data[2]}}"></td></tr>
-						<tr><td>作成日時</td><td>{{data[3]}}</td></tr>
-						<tr><td>更新日時</td><td>{{data[4]}}</td></tr>
+						<tr><td>Numbering ID</td><td>{{data[0]}}</td></tr>
+						<tr><td>Colum Name</td><td><input type="text" name="numbering_name" value="{{data[1]}}"></td></tr>
+						<tr><td>Next Value</td><td><input type="text" name="next_value" value="{{data[2]}}"></td></tr>
+						<tr><td>Create Time</td><td>{{data[3]}}</td></tr>
+						<tr><td>Update Time</td><td>{{data[4]}}</td></tr>
 					</tbody>
 				</table>
 			</form>
 		</div>
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 
-		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
-		<!-- ===== フッダー情報 ===== -->
+		<p class="pagetop"><a href="#page">Back Page Top</a></p>
+		<!-- ===== Footer ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
 		</footer>
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 	</div>
 </body>
 </html>

@@ -1,0 +1,71 @@
+/* ページ全体 */
+* {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	width: 250px;
+	height: 250px;
+}
+
+/* ヘッダー */
+#pageHead {
+	font-size: 10px;
+	color: #696969;
+	background: #d6c6af;
+	width: auto;
+}
+
+/* コンテンツ */
+/* メニュー */
+/* テーブル　*/
+#pageBody table.menuTable {
+	width: 100%;
+	height: 100%;
+	/* margin: 0;
+	padding: 0;
+	border: 0; */
+}
+
+/* ボタン共通 */
+#pageBody table.menuTable button {
+	background: #bee0c2;
+}
+
+/* 1セルボタン */
+#pageBody table.menuTable button.button {
+	padding: 3px 0px;
+	margin: 3px 0px;
+	width: 100%;
+	height: 100%;
+}
+
+/* 2セルボタン */
+#pageBody table.menuTable button.button2 {
+	padding: 3px 0px;
+	margin: 3px 0px;
+	width: 100%;
+	height: 100%;
+}
+
+/* セレクトボタン */
+#pageBody table.menuTable select {
+	padding: 0px;
+	margin: 3px 0px;
+
+	width: 100%;
+	height: 25px;
+}
+
+/* テキストボックス */
+#pageBody table.menuTable input {
+	padding: 0px;
+	margin: 3px 0px;
+
+	width: 80%;
+	height: 20px;
+}
