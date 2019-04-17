@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- ===== 基本設定 ===== -->
+	<!-- ===== Basic Setting ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用ユーザ編集</title>
+	<title>Adminstrator User Edit</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
@@ -43,60 +43,60 @@
 			document.adminUserEdit.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== -->
+	<!-- ===== Basic Setting ===== -->
 </head>
 <body>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 	<div id="page">
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用ユーザ編集</h1>
+			<h1 id="siteTitle">Adminstrator User Edit</h1>
 			<nav class="globalNavi">
 				<ul>
-					<li><a onclick="jump_list('0');">メニュー</a></li>
-					<li><a onclick="jump_list('5');">管理ユーザ一覧</a></li>
-					<li><a onclick="jump_list('1');">採番一覧</a></a></li>
-					<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
-					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
-					<li><a onclick="jump_list('4');">権限一覧</a></li>
+					<li><a onclick="jump_list('0');">Menu</a></li>
+					<li><a onclick="jump_list('5');">Administrator User List</a></li>
+					<li><a onclick="jump_list('1');">Numbering List</a></li>
+					<li><a onclick="jump_list('2');">User List</a></li>
+					<li><a onclick="jump_list('3');">Group Folder List</a></li>
+					<li><a onclick="jump_list('4');">Authority List</a></li>
 				</ul>
 			</nav>
 		</header>
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 		<div id="pageBody">
 			<form method="POST" name="adminUserEdit">
 				{{ form.hidden_tag() }}
 				{% if form.admin_user_id.data == '0' %}
-					<button type="button" name="createUser" onclick="jump_upd('0', 'NEW');">作成</button>
+					<button type="button" class="editButton" onclick="jump_upd('0', 'NEW');">Create</button>
 				{% else %}
-					<button type="button" name="createUser" onclick="jump_upd('{{form.admin_user_id.data}}', 'UPD');">更新</button>
-					<button type="button" name="delateUser" onclick="jump_upd('{{form.admin_user_id.data}}', 'DEL');">削除</button>
+					<button type="button" class="editButton" onclick="jump_upd('{{form.admin_user_id.data}}', 'UPD');">Update</button>
+					<button type="button" class="editButton" onclick="jump_upd('{{form.admin_user_id.data}}', 'DEL');">Delete</button>
 				{% endif %}
-					<button type="button" name="backUser" onclick="jump_list('5');">戻る</button>
+					<button type="button" class="editButton" onclick="jump_list('5');">Back</button>
 
-				<table>
+				<table class="editList">
 					<tbody>
-						<tr><td>ユーザID</td><td>{{data[0]}}</td></tr>
-						<tr><td>ユーザ名</td><td><input type="text" name="admin_user_name" value="{{data[1]}}"></td></tr>
-						<tr><td>ログインID</td><td><input type="text" name="admin_user_login_id" value="{{data[2]}}"></td></tr>
-						<tr><td>パスワード</td><td><input type="password" name="admin_user_password" value="{{data[3]}}"></td></tr>
-						<tr><td>作成日時</td><td>{{data[4]}}</td></tr>
-						<tr><td>更新日時</td><td>{{data[5]}}</td></tr>
+						<tr><td>Admin User ID</td><td>{{data[0]}}</td></tr>
+						<tr><td>Admin user Name</td><td><input type="text" name="admin_user_name" value="{{data[1]}}"></td></tr>
+						<tr><td>Login ID</td><td><input type="text" name="admin_user_login_id" value="{{data[2]}}"></td></tr>
+						<tr><td>Password</td><td><input type="password" name="admin_user_password" value="{{data[3]}}"></td></tr>
+						<tr><td>Create Time</td><td>{{data[4]}}</td></tr>
+						<tr><td>Update Time</td><td>{{data[5]}}</td></tr>
 					</tbody>
 				</table>
 			</form>
 		</div>
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 
-		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
-		<!-- ===== フッダー情報 ===== -->
+		<p class="pagetop"><a href="#page">Back Page Top</a></p>
+		<!-- ===== Footer ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
 		</footer>
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 	</div>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 </body>
 </html>

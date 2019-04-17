@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- ===== 基本設定 ===== -->
+	<!-- ===== Basic Setting ===== -->
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>管理者用権限編集</title>
+	<title>Authority Edit</title>
 	<link rel="stylesheet" type="text/css" href="/static/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/static/css/css.css" />
 	<script type="text/javascript">
@@ -58,43 +58,43 @@
 			document.authorityEdit.submit();
 		}
 	</script>
-	<!-- ===== 基本情報 ===== -->
+	<!-- ===== Basic Setting ===== -->
 </head>
 <body>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 	<div id="page">
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 		<header id="pageHead">
-			<h1 id="siteTitle">管理者用ユーザ編集</h1>
+			<h1 id="siteTitle">Authority Edit</h1>
 			<nav class="globalNavi">
 				<ul>
-					<li><a onclick="jump_list('0');">メニュー</a></li>
-					<li><a onclick="jump_list('5');">管理者ユーザ一覧</a></li>
-					<li><a onclick="jump_list('1');">採番一覧</a></a></li>
-					<li><a onclick="jump_list('2');">ユーザ一覧</a>></a></li>
-					<li><a onclick="jump_list('3');">グループフォルダー一覧</a></li>
-					<li><a onclick="jump_list('4');">権限一覧</a></li>
+					<li><a onclick="jump_list('0');">Menu</a></li>
+					<li><a onclick="jump_list('5');">Administrator User List</a></li>
+					<li><a onclick="jump_list('1');">Numbering List</a></li>
+					<li><a onclick="jump_list('2');">User List</a></li>
+					<li><a onclick="jump_list('3');">Group Folder List</a></li>
+					<li><a onclick="jump_list('4');">Authority List</a></li>
 				</ul>
 			</nav>
 		</header>
-		<!-- ===== ヘッダー情報 ===== -->
+		<!-- ===== Head ===== -->
 
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 		<div id="pageBody">
 			<form method="POST" name="authorityEdit">
 				{{ form.hidden_tag() }}
 				<input type="hidden" name="authority_state" value="0">
 				{% if form.user_id.data == '0' or form.group_folder_id.data == '0' %}
-					<button type="button" name="createAthority" onclick="jump_upd('NEW');">作成</button>
+					<button type="button" class="editButton" onclick="jump_upd('NEW');">Create</button>
 				{% else %}
-					<button type="button" name="createAthority" onclick="jump_upd('UPD');">更新</button>
-					<button type="button" name="delateAthority" onclick="jump_upd('DEL');">削除</button>
+					<button type="button" class="editButton" onclick="jump_upd('UPD');">Update</button>
+					<button type="button" class="editButton" onclick="jump_upd('DEL');">Delete</button>
 				{% endif %}
-					<button type="button" name="backUser" onclick="jump_list('4');">戻る</button>
-				<table>
+					<button type="button" class="editButton" onclick="jump_list('4');">Back</button>
+				<table class="editList">
 					<tbody>
 						<tr>
-							<td>ID:ユーザ</td>
+							<td>ID:User Name</td>
 							<td>
 								{% if form.user_id.data == '0' or form.group_folder_id.data == '0' %}
 									<select id='select_user_id'>
@@ -117,7 +117,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>ID:グループフォルダー名</td>
+							<td>ID:Group Folder Name</td>
 							<td>
 								{% if form.user_id.data == '0' or form.group_folder_id.data == '0' %}
 									<select id='select_group_folder_id'>
@@ -139,59 +139,59 @@
 							</td>
 						</tr>
 						<tr>
-							<td>権限状態</td>
+							<td>Authority State</td>
 							<td>
-								<table>
+								<table class="stateList">
 									<tbody>
 										{% if state_bit[4] == True %}
-											<tr><td>マスター権限</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+											<tr><td>Mastar</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
-											<tr><td>マスター権限</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+											<tr><td>Mastar</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
 
 										{% if state_bit[3] == True %}
-											<tr><td>グループユーザの追加、削除</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+											<tr><td>Add and Del User</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
-											<tr><td>グループユーザの追加、削除</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+											<tr><td>Add and Del User</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
 
 										{% if state_bit[2] == True %}
-											<tr><td>ブックマーク削除</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+											<tr><td>Del WebBookMark</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
-											<tr><td>ブックマーク削除</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+											<tr><td>Del WebBookMark</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
 
 										{% if state_bit[1] == True %}
-											<tr><td>ブックマーク内容の編集</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+											<tr><td>Update WebBookMark</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
-											<tr><td>ブックマーク内容の編集</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+											<tr><td>Update WebBookMark</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
 
 										{% if state_bit[0] == True %}
-											<tr><td>ブックマーク追加</td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
+											<tr><td>Add WebBookMark/td><td><input type="checkbox" name="check_authority_state" onClick="" checked></td></tr>
 										{% else %}
-											<tr><td>ブックマーク追加</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
+											<tr><td>Add WebBookMark</td><td><input type="checkbox" name="check_authority_state" onClick=""></td></tr>
 										{% endif %}
 
 									</tbody>
 								</table>
 							</td>
 						</tr>
-						<tr><td>作成日時</td><td>{{data[3]}}</td></tr>
-						<tr><td>更新日時</td><td>{{data[4]}}</td></tr>
+						<tr><td>Create Time</td><td>{{data[3]}}</td></tr>
+						<tr><td>Update Time</td><td>{{data[4]}}</td></tr>
 					</tbody>
 				</table>
 			</form>
 		</div>
-		<!-- ===== コンテンツ ===== -->
+		<!-- ===== Content ===== -->
 
-		<p class="pagetop"><a href="#page">ページの先頭へ戻る</a></p>
-		<!-- ===== フッダー情報 ===== -->
+		<p class="pagetop"><a href="#page">Back Page Top</a></p>
+		<!-- ===== Footer ===== -->
 		<footer id="pageFoot">
 			<p id="copyright"><small>&copy; 2019 FlaxBear All Rights Reserved,</small></p>
 		</footer>
-		<!-- ===== フッダー情報 ===== -->
+		<!-- ===== Footer ===== -->
 	</div>
-	<!-- ===== ページ全体 ===== -->
+	<!-- ===== Page ===== -->
 </body>
 </html>
