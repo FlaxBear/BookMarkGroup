@@ -1,0 +1,49 @@
+{
+	"//": "マニフェストバージョン",
+	"manifest_version": 2,
+
+	"//": "アドオン名",
+	"name": "BookMarkGroupPlugIn",
+
+	"//": "説明文",
+	"description": "This is BookMarkGroupPlugIn",
+
+	"//": "バージョン",
+	"version":"1.0",
+
+	"//": "chrome Web Storeやchrome://extensionsなどの表示に使われるアイコン",
+	"icons": {
+		"16":"icon/icon.png",
+		"48":"icon/icon.png",
+		"128":"icon/icon.png"
+	},
+
+	"//": "ブラウザのバックグラウンドで使うJSの設定",
+	"background": {
+		"//": "JSのファイル設定",
+		"scripts":["javascript/bookmarkgroup.js"],
+		"//": "Event-Pageの有効無効設定",
+		"persistent":false
+	},
+
+	"//": "broser_actionタイプ作成時の設定",
+	"browser_action": {
+		"//": "ツールバーのアイコン設定",
+		"default_icon": {
+			"19": "icon/icon.png",
+			"38": "icon/icon.png"
+		},
+		"//": "ツールバーのタイトル名",
+		"default_title": "BookMarkGroupPlugIn",
+		"//": "ツールバーのアイコンをクリック時に表示されるポップアップ",
+		"default_popup": "page/menu.html"
+	},
+	"//": "権限設定",
+	"permissions": [
+		"bookmarks",
+		"https://127.0.0.1/*"
+	],
+
+	"content_security_policy": "script-src 'self' https://127.0.0.1/*; object-src 'self'"
+
+}

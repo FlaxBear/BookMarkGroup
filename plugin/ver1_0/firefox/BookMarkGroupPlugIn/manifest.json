@@ -1,0 +1,30 @@
+{
+	"manifest_version": 2,
+
+	"name": "BookMarkGroupPlugIn",
+
+	"description": "This is BookMarkGroupPlugIn",
+
+	"version":"1.0",
+
+	"icons": {
+		"16":"icon/icon.png",
+		"48":"icon/icon.png",
+		"128":"icon/icon.png"
+	},
+
+	"browser_action": {
+		"default_icon": {
+			"19": "icon/icon.png",
+			"38": "icon/icon.png"
+		},
+		"default_title": "BookMarkGroupPlugIn",
+		"default_popup": "page/menu.html"
+	},
+
+	"permissions": [
+		"bookmarks"
+	],
+
+	"content_security_policy": "script-src 'self' https://127.0.0.1/*; object-src 'self'"
+}

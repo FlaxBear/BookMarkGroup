@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ===== Basic Setting ===== -->
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Menu</title>
+	<link rel="stylesheet" type="text/css" href="css/bookmarkgroup.css"/>
+	<script type="text/javascript" src="../javascript/bookmarkgroup.js"></script>
+	<!-- ===== Basic Setting ===== -->
+</head>
+<body>
+	<!-- ===== Page ===== -->
+	<div id="page">
+		<!-- ===== Head ===== -->
+		<header id="pageHead">
+			<h1 id="siteTitle">BookMark Group Menu</h1>
+		</header>
+		<!-- ===== Head ===== -->
+
+		<!-- ===== Content ===== -->
+		<div id="pageBody">
+			<form name="menuForm">
+				<div id="message"></div>
+				<table class="menuTable">
+					<tr>
+						<td colspan="2"><button type="button" class="button2" id="user_button">User</button>
+					</tr>
+
+					<tr>
+						<td colspan="2"><button type="button" class="button2" id="allsync_button">All Sync</button>
+					</tr>
+
+					<tr>
+						<td><input type="text" name="group_folder_name"></td>
+						<td><button type="button" class="button" id="create_button">Create</button></td>
+					</tr>
+
+					<tr>
+						<td>
+							<select name="selectSyncList" id="syncList"></select>
+						</td>
+						<td><button type="button" class="button" id="sync_button">Sync</button>
+					</tr>
+
+					<tr>
+						<td>
+							<select name="selectCommitList" id="commitList"></select>
+						</td>
+						<td><button type="button" class="button" id="commit_button">Commit</button>
+					</tr>
+
+					<tr>
+						<td>
+							<select name="selectSettingList" id="settingList"></select>
+						</td>
+						<td><button type="button" class="button" id="setting_button">Setting</button>
+					</tr>
+
+				</table>
+			</form>
+		</div>
+	</div>
+	<!-- ===== Content ===== -->
+</body>
+</html>
+
