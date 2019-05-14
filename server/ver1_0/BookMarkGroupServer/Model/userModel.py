@@ -38,7 +38,7 @@ class UserModel(baseDB.BaseDB):
 		insert_value["user_password"] = self.safty_password(insert_value["user_id"], insert_value["user_password"])
 
 		insert_sql = self.createInsertSql(self.table_info)
-		
+
 		self.startConnect()
 		message = self.insertExecute(insert_sql, insert_value)
 		self.finishConnect()
@@ -58,12 +58,12 @@ class UserModel(baseDB.BaseDB):
 		else:
 			update_sql = self.createUpdateSql(self.table_info, True)
 			update_value["user_password"] = self.safty_password(update_value["user_id"], update_value["user_password"])
-			
+
 		message = self.updateExecute(update_sql, update_value)
 		self.finishConnect()
 
 		return message
-	
+
 	def delateUser(self, form):
 		delate_value = self.createRequestSqlValue(form, self.table_info, "primary_key")
 		delate_sql = self.createDelateSql(self.table_info)
@@ -94,7 +94,7 @@ class UserModel(baseDB.BaseDB):
 		self.finishConnect()
 
 		return select_data, message
-		
+
 	def createUpdateSql(self, table_info, password_state):
 		sql_where = ""
 		sql_value = ""
@@ -114,6 +114,18 @@ class UserModel(baseDB.BaseDB):
 
 		sql = "UPDATE " + table_info["table"] + " SET " + sql_value + " WHERE " + sql_where
 		return sql
+
+	def getLoginData(self, user_mail_address):
+		select_sql = "SELECT user_id, user_mail_address, user_password FROM " + self.table_info["table"] + " WHERE user_mail_address=%(user_mail_address)s"
+		sql_value = {
+			"user_mail_address": user_mail_address
+		}
+
+		self.startConnect()
+		select_data, message = self.selectExecute(select_sql, sql_value)
+		self.finishConnect()
+
+		return select_data, message
 
 	def safty_password(self, id, password):
 		hash = hashlib.sha256()

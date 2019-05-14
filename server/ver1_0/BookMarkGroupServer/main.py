@@ -11,19 +11,20 @@ import ssl
 sys.path.append('./Model')
 sys.path.append('./Validate')
 
-from Validate import ( loginUserValidate
-, adminUserEditShowValidate, adminUserEditUpdValidate
+from Validate import (
+  adminUserEditShowValidate, adminUserEditUpdValidate
 , numberingEditShowValidate, numberingEditUpdValidate
 , userEditShowValidate, userEditUpdValidate
 , groupFolderEditShowValidate, groupFolderEditUpdValidate
 , authorityEditShowValidate, authorityEditUpdValidate
+, loginUserValidate
 )
 from Model import adminUserModel, userModel, groupFolderModel, numberingModel, authorityModel
 
 app = Flask(__name__)
 app.secret_key = 'aaaa'
 # SSLify(app)
-# CORS(app)
+CORS(app)
 
 login_maneger = LoginManager()
 login_maneger.init_app(app)
@@ -35,6 +36,26 @@ def after_request(response):
 	response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
 	return response
 
+@login_maneger.user_loader
+def user_loader(user_id):
+	pass
+
+@login_maneger.request_loader
+def request_loader(request):
+	pass
+
+def login_admin_user_check(session):
+	check = False
+	if 'admin_user_id' in session and 'admin_user_login_id' in session:
+		model = adminUserModel.AdminUserModel()
+		select_data, message = model.getLoginData(session['admin_user_login_id'])
+
+		if (message == "Complate") and (select_data[0][0] == session['admin_user_id']):
+			check = True
+
+	return check
+
+""" Admin Page """
 """====================================================================================================================================================================================================="""
 @app.route('/')
 def root():
@@ -56,22 +77,13 @@ def mastar():
 	"""
 	/mastar path
 	Perform login page processing
-
-	Parameters
-	----------
-	message : str
-	result : str
-	form : FlaskForm or LoginUserValidate
-	model : AdminUserModel
-	select_data : array
-	crypto_password : str
-
 	"""
 	message = ''
 	result = ''
+
 	if request.method == "POST":
 		# Login process
-		form = loginUserValidate.LoginUserValidate()
+		form = loginAdminUserValidate.LoginAdminUserValidate()
 
 		# Check request data
 		if form.validate_on_submit() == True:
@@ -90,18 +102,16 @@ def mastar():
 
 			else:
 				# If the password is not the same
-				message = 'Error'
+				message = "Don't User or Password"
 				return render_template('mastarLogin.html', form=form, message=message)
 
 		else:
 			# If there is error in the request data
-
 			# Create error message
 			for error in form.admin_user_login_id.errors:
 				message += error + '<br>'
 			for error in form.admin_user_password.errors:
 				message += error + '<br>'
-
 			return render_template('mastarLogin.html', form=form, message=message)
 
 	else:
@@ -109,46 +119,34 @@ def mastar():
 		form = FlaskForm()
 		return render_template('mastarLogin.html', form=form, message=message)
 
-@login_maneger.user_loader
-def user_loader(user_id):
-	pass
-
-@login_maneger.request_loader
-def request_loader(request):
-	pass
-
-def login_admin_user_check(session):
-	check = False
-	if 'admin_user_id' in session and 'admin_user_login_id' in session:
-		model = adminUserModel.AdminUserModel()
-		select_data, message = model.getLoginData(session['admin_user_login_id'])
-
-		if (message == "Complate") and (select_data[0][0] == session['admin_user_id']):
-			check = True
-		else:
-			check = False
-	else:
-		check = False
-
-	return check
-
 # Admin Menu
 @app.route('/mastar/menu', methods=['GET', 'POST'])
 #@login_required
 def mastarMenu():
+	"""
+	/mastar/menu path
+	Show menu page
+	"""
+
 	model = adminUserModel.AdminUserModel()
 	form = FlaskForm()
 
+	# Check Login User
 	if login_admin_user_check(session):
 		html = render_template('mastarMenu.html', form=form)
 	else:
 		html = redirect(url_for('mastar'))
+
 	return html
 
 # AdminUser List
 @app.route('/mastar/adminUserList', methods=['GET', 'POST'])
 #@login_required
 def adminUserList():
+	"""
+	/mastar/menu path
+	Show menu page
+	"""
 	form = FlaskForm()
 	model = adminUserModel.AdminUserModel()
 	message = {
@@ -156,7 +154,7 @@ def adminUserList():
 		"message": ""
 	}
 
-
+	# Check Login User
 	if login_admin_user_check(session):
 		data, result = model.getList()
 
@@ -175,16 +173,24 @@ def adminUserList():
 @app.route('/mastar/adminUserEdit', methods=['POST'])
 #@login_required
 def adminUserEdit():
+	"""
+	/mastar/menu path
+	Show menu page
+	"""
+
 	model = adminUserModel.AdminUserModel()
 	message = {
 		"state": "",
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		if request.method == "POST":
 
+
 			if request.form["state"] == "SHOW":
+				# Show Edit Page
 				form = adminUserEditShowValidate.AdminUserEditShowValidate()
 
 				if form.validate_on_submit() == False:
@@ -193,6 +199,7 @@ def adminUserEdit():
 					return redirect(url_for("adminUserList"))
 
 			else:
+				# Update Data
 				form = adminUserEditUpdValidate.AdminUserEditUpdValidate()
 
 				if form.validate_on_submit():
@@ -620,10 +627,90 @@ def logout():
 
 # =====================================================================================================================================================================================================
 # Plugin
+# Login User
+@app.route('/user/loginUser', methods=['GET', 'POST'])
+def loginUser():
+	message = ''
+	result = ''
+
+	mail_address = ""
+	login_password = ""
+
+	json_data = {
+		"message": "",
+		"data": {
+			"user_id": "",
+			"password": "",
+		}
+	}
+
+	if request.method == "POST":
+		form = loginUserValidate.LoginUserValidate()
+
+		# Check request data
+		if form.validate_on_submit() == True:
+			# If there is no error in create request data
+			model = userModel.UserModel()
+			select_data, result = model.getLoginData(form.login_mail.data)
+			crypto_password = model.safty_password(select_data[0][0], form.password.data)
+
+			#Check password
+			if select_data[0][2] == crypto_password:
+				# If the password is the same
+				# Set login information in session
+				session['user_id'] = select_data[0][0]
+				session['user_login_mail'] = select_data[0][1]
+				json_data["message"] = "Success"
+				json_data["user_id"] = select_data[0][0]
+				json_data["password"] = select_data[0][2]
+		else:
+			json_data["message"] = "Error"
+	else:
+		json_data["message"] = "Error"
+
+	return jsonify(json_data)
+	# if request.method == "GET":
+	# 	model = userModel.UserModel()
+	# 	mail_address = request.args.get("mail_address")
+	# 	login_password = request.args.get("login_password")
+	# 	message, data = model.getLoginData(mail_address)
+
+	# 	crypto_password = model.safty_password(data["user_id"], login_password)
+	# 	if data["user_password"] == crypto_password:
+	# 		json_data["message"] = "Success"
+	# 		json_data["data"]["mail_address"] = mail_address
+	# 		json_data["data"]["login_password"] = login_password
+	# 		session['user_id'] = select_data[0][0]
+	# 		session['user_login_id'] = select_data[0][1]
+	# 	else:
+	# 		json_data["message"] = "Login Falied"
+	# else:
+	# 	json_data["message"] = "Request Error"
+
+	return jsonify(json_data)
+
+# Sync GroupFolders
+@app.route('/user/allSyncGroupFolders', methods=['GET', 'POST'])
+def allSyncGroupFolders():
+	json_data = {
+		"message" : "",
+		"data" : {
+			"group_folder_id": "0",
+			"group_folder_name": "",
+			"group_folder_version": "0",
+		}
+	}
+	if request.method == "GET":
+		pass
+	else:
+		json_data["message"] = "Request Error"
+
+	return jsonify(json_data)
+
 # Create Folder
 @app.route('/user/createGroup', methods=['GET', 'POST'])
 def userCreateFolder():
-	model = groupFolderModel.GroupFolderModel()
+	groupfolder_model = groupFolderModel.GroupFolderModel()
 	json_data = {
 		"message" : "",
 		"data" : {
@@ -636,8 +723,11 @@ def userCreateFolder():
 	if request.method == "GET":
 		if check_group_folder_name(request.args.get('group_folder_name')):
 			group_folder_name = request.args.get('group_folder_name')
-			message, group_folder_id = model.insertGroupFolderPlugin(group_folder_name)
+			user_id = request.args.get('user_id')
+			message, group_folder_id = groupfolder_model.insertGroupFolderPlugin(group_folder_name)
 
+
+			print(message)
 			json_data["message"] = "Success"
 			json_data["data"]["group_folder_id"] = group_folder_id
 			json_data["data"]["group_folder_name"] = group_folder_name
@@ -680,11 +770,16 @@ def userCommitGroup():
 	}
 
 	if request.method == "GET":
-		url_query = request.args.get('data')
+		temp_json = {}
+		url_query = request.args.get('group_folder_data')
 		json_bookmark = json.loads(url_query)
-		select_data, message = model.selectGroupFolderPlugin(json_bookmark["bookmark_id"])
+
+		select_data, message = model.selectGroupFolderPlugin(json_bookmark["0"]["bookmark_id"])
+
 		if message == "Complate" and select_data != []:
-			create_update_json_file(json_bookmark, select_data)
+			json_bookmark.pop("0")
+			temp_json["bookmark"] = json_bookmark
+			create_update_json_file(temp_json, select_data)
 			message = model.updateGroupFolderPlugin(select_data[0][0])
 		json_data["message"] = "Success"
 	else:

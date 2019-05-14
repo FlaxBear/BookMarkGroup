@@ -126,10 +126,8 @@ class GroupFolderModel(baseDB.BaseDB):
 			"group_folder_id": group_folder_id
 		}
 		select_sql = "SELECT group_folder_id,group_folder_version FROM " + self.table_info["table"] + " WHERE group_folder_id=%(group_folder_id)s"
-		print(select_sql)
 		self.startConnect()
 		select_data, message = self.selectExecute(select_sql, select_value)
-		print(message)
 
 		if message == "Complate":
 			update_value = {
@@ -139,6 +137,5 @@ class GroupFolderModel(baseDB.BaseDB):
 			}
 			update_sql = "UPDATE " + self.table_info["table"] + " SET group_folder_version = %(group_folder_version)s, update_time = %(update_time)s WHERE group_folder_id=%(group_folder_id)s"
 			message = self.updateExecute(update_sql, update_value)
-			print(message)
 		self.finishConnect()
 		return message
