@@ -1,8 +1,20 @@
+# -*- coding: utf-8 -*-
+"""This module contains basic processing for GroupFolder database."""
 from module import baseDB
 import numberingModel
 
 class GroupFolderModel(baseDB.BaseDB):
+	"""
+	Connect to the database adn process groupFolder database
+
+	Attributes
+	---------
+	table_info : dict
+		Table name and pram info
+
+	"""
 	def __init__(self):
+		""" Set attributes."""
 		super().__init__()
 		self.table_info = {
 			"table": "group_folder",
@@ -18,6 +30,21 @@ class GroupFolderModel(baseDB.BaseDB):
 		}
 
 	def selectGroupFolder(self, form):
+		"""
+		Execute the SELECT statement.
+
+		Parameters
+		----------
+		form :  GroupFolderEditShowValidate or GroupFolderUpdValidate
+			form data
+
+		Returns
+		----------
+		select_data : list
+			All data in the groupFolder database
+		message : str
+			'Complate' messsage or Error message
+		"""
 		select_value = self.createRequestSqlValue(form, self.table_info, "primary_key")
 		select_sql = self.createSelectSql(self.table_info)
 
@@ -28,6 +55,22 @@ class GroupFolderModel(baseDB.BaseDB):
 		return select_data, message
 
 	def insertGroupFolder(self, form):
+		"""
+		Execute the INSERT statement.
+
+		Parameters
+		----------
+		form : GroupFolderUpdValidate
+			form data
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+		insert_value["group_folder_id"] : int
+			group_folder_id
+
+		"""
 		numbering_class = numberingModel.NumberingModel()
 
 		insert_value = self.createRequestSqlValue(form, self.table_info, "insert")
@@ -46,6 +89,19 @@ class GroupFolderModel(baseDB.BaseDB):
 		return message, insert_value["group_folder_id"]
 
 	def updateGroupFolder(self, form):
+		"""
+		Execute the UPDATE statement.
+
+		Parameters
+		----------
+		form : GroupFolderUpdValidate
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+
+		"""
 		update_value = self.createRequestSqlValue(form, self.table_info, "update")
 		update_value["update_time"] = self.create_time()
 
@@ -58,6 +114,20 @@ class GroupFolderModel(baseDB.BaseDB):
 		return message
 
 	def delateGroupFolder(self, form):
+		"""
+		Execute the DELATE statement.
+
+		Parameters
+		----------
+		form : GroupFolderUpdValidate
+			form data
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+
+		"""
 		delate_value = self.createRequestSqlValue(form, self.table_info, "primary_key")
 		delate_sql = self.createDelateSql(self.table_info)
 
@@ -68,6 +138,17 @@ class GroupFolderModel(baseDB.BaseDB):
 		return message
 
 	def getList(self):
+		"""
+		Get groupFolder data list
+
+		Returns
+		----------
+		select_data : list
+			groupFolder data list
+		message : str
+			'Complate' message or Error message
+
+		"""
 		select_sql = """
 					 SELECT group_folder_id, group_folder_name, group_folder_version, json_directory_path, group_folder_memo
 					 , create_time, update_time
@@ -80,6 +161,17 @@ class GroupFolderModel(baseDB.BaseDB):
 		return select_data, message
 
 	def getSelectList(self):
+		"""
+		For authority page
+		Get groupFolder's group_folder_id and group_folder_name data list
+
+		Returns
+		----------
+		select_data : list
+			groupFolder's group_folder_id and group_folder_name data
+		message : str
+			'Complate' message or Error message
+		"""
 		select_sql = "SELECT group_folder_id, group_folder_name FROM group_folder"
 
 		self.startConnect()
@@ -90,6 +182,22 @@ class GroupFolderModel(baseDB.BaseDB):
 
 
 	def selectGroupFolderPlugin(self, group_folder_id):
+		"""
+		For Plugin
+		Get one data based on group_folder_id
+
+		Parameters
+		----------
+		group_folder_id : int
+			group_folder_id data
+
+		Returns
+		----------
+		select_data : list
+			One GroupFolder data
+		message : str
+			'Complate' message or Error message
+		"""
 		select_value = self.createRequestSqlValue({}, self.table_info, "primary_key")
 		select_sql = self.createSelectSql(self.table_info)
 
@@ -102,6 +210,22 @@ class GroupFolderModel(baseDB.BaseDB):
 		return select_data, message
 
 	def insertGroupFolderPlugin(self, group_folder_name):
+		"""
+		For Plugin
+		Insert one data
+
+		Parameters
+		----------
+		group_folder_name : str
+			group_folder_name data
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+		insert_value["group_folder_id"] : int
+			group_folder_id
+		"""
 		numbering_class = numberingModel.NumberingModel()
 
 		insert_value = self.createRequestSqlValue({}, self.table_info, "insert")
@@ -121,6 +245,20 @@ class GroupFolderModel(baseDB.BaseDB):
 		return message, insert_value["group_folder_id"]
 
 	def updateGroupFolderPlugin(self, group_folder_id):
+		"""
+		For Plugin
+		Update one data
+
+		Parameters
+		----------
+		group_folder_id : int
+			group_folder_id
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+		"""
 		message = ""
 		select_value = {
 			"group_folder_id": group_folder_id

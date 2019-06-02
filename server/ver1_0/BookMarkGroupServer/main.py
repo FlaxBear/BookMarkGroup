@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """ """
+# modules
 import sys, json
 from flask import Flask, render_template, redirect, url_for, request, make_response, session, jsonify, json
 from flask_login import LoginManager, login_user, login_required
@@ -8,11 +9,12 @@ from flask_sslify import SSLify
 from flask_cors import CORS
 import ssl
 
+# add modules
 sys.path.append('./Model')
 sys.path.append('./Validate')
 
-from Validate import (
-  adminUserEditShowValidate, adminUserEditUpdValidate
+from Validate import (loginAdminUserValidate
+, adminUserEditShowValidate, adminUserEditUpdValidate
 , numberingEditShowValidate, numberingEditUpdValidate
 , userEditShowValidate, userEditUpdValidate
 , groupFolderEditShowValidate, groupFolderEditUpdValidate
@@ -29,6 +31,8 @@ CORS(app)
 login_maneger = LoginManager()
 login_maneger.init_app(app)
 
+""" Functions required for Admin Page """
+"""====================================================================================================================================================================================================="""
 @app.after_request
 def after_request(response):
 	response.headers.add('Access-Control-Allow-Origin', '*')
@@ -54,6 +58,7 @@ def login_admin_user_check(session):
 			check = True
 
 	return check
+"""====================================================================================================================================================================================================="""
 
 """ Admin Page """
 """====================================================================================================================================================================================================="""
@@ -121,7 +126,6 @@ def mastar():
 
 # Admin Menu
 @app.route('/mastar/menu', methods=['GET', 'POST'])
-#@login_required
 def mastarMenu():
 	"""
 	/mastar/menu path
@@ -141,11 +145,10 @@ def mastarMenu():
 
 # AdminUser List
 @app.route('/mastar/adminUserList', methods=['GET', 'POST'])
-#@login_required
 def adminUserList():
 	"""
-	/mastar/menu path
-	Show menu page
+	/mastar/adminUserList path
+	Show adminUserList page
 	"""
 	form = FlaskForm()
 	model = adminUserModel.AdminUserModel()
@@ -171,11 +174,10 @@ def adminUserList():
 
 # AdminUser Edit
 @app.route('/mastar/adminUserEdit', methods=['POST'])
-#@login_required
 def adminUserEdit():
 	"""
-	/mastar/menu path
-	Show menu page
+	/mastar/adminUserEdit path
+	Show adminUserEdit page
 	"""
 
 	model = adminUserModel.AdminUserModel()
@@ -188,9 +190,9 @@ def adminUserEdit():
 	if login_admin_user_check(session):
 		if request.method == "POST":
 
-
+			# Validate
 			if request.form["state"] == "SHOW":
-				# Show Edit Page
+				# Validation for data display
 				form = adminUserEditShowValidate.AdminUserEditShowValidate()
 
 				if form.validate_on_submit() == False:
@@ -199,18 +201,21 @@ def adminUserEdit():
 					return redirect(url_for("adminUserList"))
 
 			else:
-				# Update Data
+				# Validation for data update
 				form = adminUserEditUpdValidate.AdminUserEditUpdValidate()
 
 				if form.validate_on_submit():
 
 					if form.state.data == 'NEW':
+						# Add data
 						result, form.admin_user_id.data = model.insertAdminUser(form)
 
 					elif form.state.data == 'UPD':
+						# Update data
 						result = model.updateAdminUser(form)
 
 					elif form.state.data == 'DEL':
+						# Delete data
 						result = model.delateAdminUser(form)
 						form.admin_user_id.data = '0'
 
@@ -219,6 +224,7 @@ def adminUserEdit():
 						message["message"] = result
 
 				else:
+					# Show Error Message
 					message["state"] = "Error"
 					for error in form.admin_user_id.errors:
 						message["message"] += error + "<br>"
@@ -229,7 +235,9 @@ def adminUserEdit():
 					for error in form.admin_user_password.errors:
 						message["message"] += error + "<br>"
 
+
 		if form.admin_user_id.data != '0':
+			# Show Edit Page
 			data, result = model.selectAdminUser(form)
 
 			if result == "Complate":
@@ -239,6 +247,7 @@ def adminUserEdit():
 				message["message"] = result
 				html = render_template('mastarAdminUserEdit.html', data=data[0], form=form)
 		else:
+			# Show Edit New Page
 			data = ['', '', '', '', '']
 			html = render_template('mastarAdminUserEdit.html', data=data, form=form)
 	else:
@@ -249,6 +258,10 @@ def adminUserEdit():
 # Numbering List
 @app.route('/mastar/numberingList', methods=['GET', 'POST'])
 def numberingList():
+	"""
+	/mastar/numberingList path
+	Show numberingList page
+	"""
 	form = FlaskForm()
 	model = numberingModel.NumberingModel()
 	message = {
@@ -256,6 +269,7 @@ def numberingList():
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		data, result = model.getList()
 
@@ -273,16 +287,24 @@ def numberingList():
 # Numbering Edit
 @app.route('/mastar/numberingEdit', methods=['POST'])
 def numberingEdit():
+	"""
+	/mastar/numberingEdit path
+	Show numberingEit page
+	"""
+
 	model = numberingModel.NumberingModel()
 	message = {
 		"state": "",
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		if request.method == "POST":
 
+			# Validate
 			if request.form["state"] == "SHOW":
+				# Validation for data display
 				form = numberingEditShowValidate.NumberingEditShowValidate()
 
 				if form.validate_on_submit() == False:
@@ -290,24 +312,30 @@ def numberingEdit():
 					message["message"] = form.numbering_id.errors
 					return redirect(url_for("numberingList"))
 			else:
+				# Validation for data update
 				form = numberingEditUpdValidate.NumberingEditUpdValidate()
 
 				if form.validate_on_submit():
 
 					if form.state.data == 'NEW':
+						# Add data
 						result, form.numbering_id.data = model.insertNumbering(form)
 
 					elif form.state.data == 'UPD':
+						# Update data
 						result = model.updateNumbergin(form)
 
 					elif form.state.data == 'DEL':
+						# Delete data
 						result = model.delateNumbergin(form)
 						form.numbering_id.data = '0'
 
 					if result != "Complate":
 						message["state"] = "Error"
 						message["message"] = result
+
 				else:
+					# Show Error Message
 					message["state"] = "Error"
 					for error in form.numbering_id.errors:
 						message["message"] += error + "<br>"
@@ -317,6 +345,7 @@ def numberingEdit():
 						message["message"] += error + "<br>"
 
 			if form.numbering_id.data != '0':
+				# Show Edit Page
 				data, result = model.selectNumbering(form)
 
 				if result == "Complate":
@@ -326,9 +355,9 @@ def numberingEdit():
 					message["message"] = result
 					html = render_template('mastarNumberingList.html', data=data, form=form, message=message)
 			else:
+				# Show Edit New Page
 				data = ['', '', '', '', '', '']
 				html = render_template('mastarNumberingEdit.html', data=data, form=form, message=message)
-
 	else:
 		html = redirect(url_for('mastar'))
 
@@ -337,6 +366,10 @@ def numberingEdit():
 # User List
 @app.route('/mastar/userList', methods=['GET', 'POST'])
 def userList():
+	"""
+	/mastar/userList path
+	Show userList page
+	"""
 	form = FlaskForm()
 	model = userModel.UserModel()
 	message = {
@@ -344,6 +377,7 @@ def userList():
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		data, result = model.getList()
 
@@ -361,16 +395,24 @@ def userList():
 # User Edit
 @app.route('/mastar/userEdit', methods=['POST'])
 def userEdit():
+	"""
+	/mastar/userEidt path
+	Show userEdit page
+	"""
+
 	model = userModel.UserModel()
 	message = {
 		"state": "",
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		if request.method == "POST":
 
+			# Validate
 			if request.form["state"] == "SHOW":
+				# Validation for data display
 				form = userEditShowValidate.UserEditShowValidate()
 
 				if form.validate_on_submit() == False:
@@ -379,17 +421,21 @@ def userEdit():
 					return redirect(url_for("userList"))
 
 			else:
+				# Validation for data update
 				form = userEditUpdValidate.UserEditUpdValidate()
 
 				if form.validate_on_submit():
 
 					if form.state.data == 'NEW':
+						# Add data
 						result, form.user_id.data = model.insertUser(form)
 
 					elif form.state.data == 'UPD':
+						# Update data
 						result = model.updateUser(form)
 
 					elif form.state.data == 'DEL':
+						# Delete data
 						result = model.delateUser(form)
 						form.user_id.data = '0'
 
@@ -398,6 +444,7 @@ def userEdit():
 						message["message"] = result
 
 				else:
+					# Show Error Message
 					message["state"] = "Error"
 					for error in form.user_id.errors:
 						message["message"] += error + "<br>"
@@ -409,6 +456,7 @@ def userEdit():
 						message["message"] += error + "<br>"
 
 			if form.user_id.data != '0':
+				# Show Edit Page
 				data, result = model.selectUser(form)
 
 				if result == "Complate":
@@ -418,6 +466,7 @@ def userEdit():
 					message["message"] = result
 					html = render_template('mastarUserEdit.html', data=data[0], form=form)
 			else:
+				# Show Edit New Page
 				data = ['', '', '', '', '']
 				html = render_template('mastarUserEdit.html', data=data, form=form)
 	else:
@@ -428,6 +477,10 @@ def userEdit():
 # GroupFolder List
 @app.route('/mastar/groupFolderList',  methods=['GET', 'POST'])
 def groupFolderList():
+	"""
+	/mastar/groupFolderList path
+	Show groupFolder page
+	"""
 	form = FlaskForm()
 	model = groupFolderModel.GroupFolderModel()
 	message = {
@@ -435,6 +488,7 @@ def groupFolderList():
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		data, result = model.getList()
 
@@ -452,16 +506,23 @@ def groupFolderList():
 # GroupFolder Edit
 @app.route('/mastar/groupFolderEdit', methods=['GET', 'POST'])
 def groupFolderEdit():
+	"""
+	/mastar/groupFolderEdit path
+	Show groupFolder page
+	"""
 	model = groupFolderModel.GroupFolderModel()
 	message = {
 		"state": "",
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		if request.method == 'POST':
 
+			# Validate
 			if request.form["state"] == "SHOW":
+				# Validation for data display
 				form = groupFolderEditShowValidate.GroupFolderEditShowValidate()
 
 				if form.validate_on_submit() == False:
@@ -469,17 +530,21 @@ def groupFolderEdit():
 					message["message"] = form.group_folder_id.errors
 					return redirect(url_for("groupFolderList"))
 			else:
+				# Validation for data update
 				form = groupFolderEditUpdValidate.GroupFolderUpdValidate()
 
 				if form.validate_on_submit():
 
 					if form.state.data == 'NEW':
+						# Add data
 						result, form.group_folder_id.data = model.insertGroupFolder(form)
 
 					elif form.state.data == 'UPD':
+						# Update data
 						result = model.updateGroupFolder(form)
 
 					elif form.state.data == 'DEL':
+						# Delete data
 						result = model.delateGroupFolder(form)
 						form.group_folder_id.data = '0'
 
@@ -488,6 +553,7 @@ def groupFolderEdit():
 						message["message"] = result
 
 				else:
+					# Show Error Message
 					message["state"] = "Error"
 					for error in form.group_folder_id.errors:
 						message["message"] += error + "<br>"
@@ -499,6 +565,7 @@ def groupFolderEdit():
 						message["message"] += error + "<br>"
 
 			if form.group_folder_id.data != '0':
+				# Show Edit Page
 				data, result = model.selectGroupFolder(form)
 
 				if result == "Complate":
@@ -508,6 +575,7 @@ def groupFolderEdit():
 					message["message"] = result
 					html = render_template('mastarGroupFolderEdit.html', data=data[0], form=form)
 			else:
+				# Show Edit New Page
 				data = ['', '', '', '', '', '', '']
 				html = render_template('mastarGroupFolderEdit.html', data=data, form=form)
 	else:
@@ -518,6 +586,10 @@ def groupFolderEdit():
 # Authoriry List
 @app.route('/mastar/authorityList', methods=['GET', 'POST'])
 def authorityList():
+	"""
+	/mastar/authorityList path
+	Show authorityList page
+	"""
 	form = FlaskForm()
 	model = authorityModel.AuthorityModel()
 	message = {
@@ -525,6 +597,7 @@ def authorityList():
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		data, result = model.getList()
 
@@ -542,16 +615,23 @@ def authorityList():
 # Authoriy Edit
 @app.route('/mastar/authorityEdit', methods=['GET', 'POST'])
 def authorityEdit():
+	"""
+	/mastar/authorityEdit path
+	Show authorityEdit page
+	"""
 	model = authorityModel.AuthorityModel()
 	message = {
 		"state": "",
 		"message": ""
 	}
 
+	# Check Login User
 	if login_admin_user_check(session):
 		if request.method == "POST":
 
+			# Validate
 			if request.form["state"] == "SHOW":
+				# Validation for data display
 				form = authorityEditShowValidate.AuthorityEditShowValidate()
 
 				if form.validate_on_submit() == False:
@@ -560,17 +640,21 @@ def authorityEdit():
 					message["message"] += form.group_folder_id.errors
 					return redirect(url_for("authorityList"))
 			else:
+				# Validation for data update
 				form = authorityEditUpdValidate.AuthorityEditUpdValidate()
 
 				if form.validate_on_submit():
 
 					if form.state.data == 'NEW':
+						# Add data
 						result, form.user_id.data, form.group_folder_id.data = model.insertAuthority(form)
 
 					elif form.state.data == 'UPD':
+						# Update data
 						result = model.upadteAuthority(form)
 
 					elif form.state.data == 'DEL':
+						# Delete data
 						result = model.delateAuthority(form)
 						form.user_id.data = '0'
 						form.group_folder_id.data = '0'
@@ -580,24 +664,27 @@ def authorityEdit():
 						message["message"] = result
 
 				else:
+					# Show Error Message
 					message["state"] = "Error"
 					for error in form.user_id.errors:
 						message["message"] += error + "<br>"
 					for error in form.group_folder_id.errors:
 						message["message"] += error + "<br>"
 
-			# User List
+			# Get User List
 			user_model = userModel.UserModel()
 			user_list, message = user_model.getSelectList()
-			# GroupFolder List
+			# Get GroupFolder List
 			groupFolder_model = groupFolderModel.GroupFolderModel()
 			groupFolder_list, message = groupFolder_model.getSelectList()
 
 			if form.user_id.data != '0' or form.group_folder_id.data != '0':
+				# Show Edit Page
 				data, result = model.selectAuthority(form)
 				state_bit = []
 
 				if result == "Complate":
+					# Restore using shift because you save the authority in bits
 					for shift in range(0, 5):
 						if (int(data[0][2])>>shift) & 1:
 							state_bit.append(True)
@@ -611,6 +698,7 @@ def authorityEdit():
 					message["message"] = result
 					html = render_template('mastarAuthorityEdit.html', data=data[0], user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit, form=form)
 			else:
+				# Show Edit New Page
 				data = ['', '', '', '', '', '']
 				state_bit = [False, False, False, False, False]
 				html = render_template('mastarAuthorityEdit.html', data=data, user_list=user_list, groupFolder_list=groupFolder_list, state_bit=state_bit,form=form)
@@ -619,23 +707,97 @@ def authorityEdit():
 
 	return html
 
+# Logout
 @app.route('/mastar/logout', methods=['GET', 'POST'])
 def logout():
+	"""
+	/mastar/logout path
+	Logout process
+	"""
 	session.pop('admin_user_id', None)
 	session.pop('admin_user_login_id', None)
 	return redirect(url_for('mastar'))
+"""====================================================================================================================================================================================================="""
 
+
+""" Functions required for Plugin """
+"""====================================================================================================================================================================================================="""
+def create_new_json_file(group_folder_id, group_folder_name):
+	"""
+		Create a new json file in a folder
+	"""
+	json_data = {
+		"bookmark_id": group_folder_id,
+		"bookmark_name": group_folder_name,
+		"bookmark":{}
+	}
+
+	# Created in json_data folder
+	folder_path = "json_data\\" + str(group_folder_id) + "_" + group_folder_name + ".json"
+
+	with open(folder_path, 'w') as f:
+		json.dump(json_data, f, ensure_ascii=False)
+
+	return
+
+def create_update_json_file(json_bookmark, select_data):
+	"""
+		Update json file
+	"""
+	json_data = {
+		"bookmark_id": select_data[0][0],
+		"bookmark_name": select_data[0][1],
+		"bookmark" : {}
+	}
+	for value in json_bookmark["bookmark"]:
+		# Create data to save
+		json_data["bookmark"][str(value)] = json_bookmark["bookmark"][str(value)]
+
+	folder_path = "json_data\\" + select_data[0][3] + ".json"
+
+	with open(folder_path, 'w') as f:
+		json.dump(json_data, f, ensure_ascii=False)
+
+	return
+
+def input_json_file(group_folder_path):
+	"""
+	Get json file data
+	"""
+	folder_path = "json_data\\" + group_folder_path + ".json"
+	f = open(folder_path, 'r')
+	json_data = json.load(f)
+	return json_data
+
+def check_group_folder_name(group_folder_name):
+	"""
+	Validate mail address
+	"""
+	result = True
+	if group_folder_name == "":
+		result = False
+
+	if len(group_folder_name) > 20:
+		result = False
+
+	if r"[^.!#$%&'*+\/=?^_`{|}~-]" in group_folder_name:
+		result = False
+
+	return result
 # =====================================================================================================================================================================================================
-# Plugin
+
+""" Plugin """
+# =====================================================================================================================================================================================================
 # Login User
 @app.route('/user/loginUser', methods=['GET', 'POST'])
 def loginUser():
-	message = ''
-	result = ''
+	"""
+	Plugin Only
+	/user/loginUser path
+	User login processing
+	"""
 
-	mail_address = ""
-	login_password = ""
-
+	# Basic json data
 	json_data = {
 		"message": "",
 		"data": {
@@ -645,6 +807,7 @@ def loginUser():
 	}
 
 	if request.method == "POST":
+		# Login process
 		form = loginUserValidate.LoginUserValidate()
 
 		# Check request data
@@ -660,13 +823,17 @@ def loginUser():
 				# Set login information in session
 				session['user_id'] = select_data[0][0]
 				session['user_login_mail'] = select_data[0][1]
+				# create json data
 				json_data["message"] = "Success"
 				json_data["user_id"] = select_data[0][0]
 				json_data["password"] = select_data[0][2]
+			else:
+				# If the password is not the same
+				json_data["message"] = "Error"
 		else:
 			json_data["message"] = "Error"
 	else:
-		json_data["message"] = "Error"
+		json_data["message"] = "Request Error"
 
 	return jsonify(json_data)
 	# if request.method == "GET":
@@ -687,11 +854,16 @@ def loginUser():
 	# else:
 	# 	json_data["message"] = "Request Error"
 
-	return jsonify(json_data)
-
 # Sync GroupFolders
 @app.route('/user/allSyncGroupFolders', methods=['GET', 'POST'])
 def allSyncGroupFolders():
+	"""
+	Plugin Only
+	/user/allSyncGroupFolders path
+	Get all folder data
+	"""
+
+	# Basic json data
 	json_data = {
 		"message" : "",
 		"data" : {
@@ -700,7 +872,9 @@ def allSyncGroupFolders():
 			"group_folder_version": "0",
 		}
 	}
+
 	if request.method == "GET":
+		# not Create
 		pass
 	else:
 		json_data["message"] = "Request Error"
@@ -710,7 +884,15 @@ def allSyncGroupFolders():
 # Create Folder
 @app.route('/user/createGroup', methods=['GET', 'POST'])
 def userCreateFolder():
+	"""
+	Plugin Only
+	/user/createGroup path
+	Create folder process
+	"""
+
 	groupfolder_model = groupFolderModel.GroupFolderModel()
+
+	# Basic json data
 	json_data = {
 		"message" : "",
 		"data" : {
@@ -721,17 +903,24 @@ def userCreateFolder():
 	}
 
 	if request.method == "GET":
+		#Folder name validate
 		if check_group_folder_name(request.args.get('group_folder_name')):
+			# Create folder process
 			group_folder_name = request.args.get('group_folder_name')
 			user_id = request.args.get('user_id')
 			message, group_folder_id = groupfolder_model.insertGroupFolderPlugin(group_folder_name)
 
+			# Create mastar authoriy data
+			# マスター管理者データ作成
+			# not create
 
-			print(message)
+			# Create json data
 			json_data["message"] = "Success"
 			json_data["data"]["group_folder_id"] = group_folder_id
 			json_data["data"]["group_folder_name"] = group_folder_name
 			json_data["data"]["group_folder_version"] = "1"
+
+			# Create json data file for storage
 			create_new_json_file(group_folder_id, group_folder_name)
 		else:
 			json_data["message"] = "Validate Error"
@@ -743,15 +932,24 @@ def userCreateFolder():
 # Update Folder
 @app.route('/user/updateGroup', methods=['GET', 'POST'])
 def userUpdateGroup():
+	"""
+	Plugin Only
+	/user/updateGroup path
+	Update folder data
+	"""
 	model = groupFolderModel.GroupFolderModel()
+
+	# Basic json data
 	json_data = {
 		"message" : "",
 		"data" : {}
 	}
 
 	if request.method == "GET":
+		# Check if file data exists
 		select_data, message = model.selectGroupFolderPlugin(request.args.get('group_folder_id'))
 		if message == "Complate" and select_data != []:
+			# Get json file
 			bookmark_data = input_json_file(select_data[0][3])
 			json_data["data"] = bookmark_data
 		json_data["message"] = "Success"
@@ -763,7 +961,14 @@ def userUpdateGroup():
 # Commit Folder
 @app.route('/user/commitGroup', methods=['GET', 'POST'])
 def userCommitGroup():
+	"""
+	Plugin Only
+	/user/commitGroup path
+	Commit folder data
+	"""
+
 	model = groupFolderModel.GroupFolderModel()
+	# Basic json data
 	json_data = {
 		"message" : "",
 		"data": {}
@@ -774,11 +979,13 @@ def userCommitGroup():
 		url_query = request.args.get('group_folder_data')
 		json_bookmark = json.loads(url_query)
 
+		# Check if file data exists
 		select_data, message = model.selectGroupFolderPlugin(json_bookmark["0"]["bookmark_id"])
-
 		if message == "Complate" and select_data != []:
+			# Since the array of 0 contains folder information
 			json_bookmark.pop("0")
 			temp_json["bookmark"] = json_bookmark
+			# Update json file
 			create_update_json_file(temp_json, select_data)
 			message = model.updateGroupFolderPlugin(select_data[0][0])
 		json_data["message"] = "Success"
@@ -790,7 +997,14 @@ def userCommitGroup():
 # Sync Folders
 @app.route('/user/syncFolders', methods=['GET', 'POST'])
 def syncFolders():
+	"""
+	Plugin Only
+	/user/syncFolders path
+	Get folder data
+	"""
 	model = groupFolderModel.GroupFolderModel()
+
+	# Basic json data
 	json_data = {
 		"message" : "",
 		"data": {}
@@ -801,11 +1015,14 @@ def syncFolders():
 		json_bookmark = json.loads(url_query)
 
 		for value in json_bookmark["bookmark_id"]:
+			# Check if file data exists
 			select_data, message = model.selectGroupFolderPlugin(value)
 			if message == "Complate" and select_data != []:
 				bookmark_id = select_data[0][0]
+				# Update json file
 				bookmark_data = input_json_file(select_data[0][3])
 				json_data["data"][bookmark_id] = bookmark_data
+
 		json_data["message"] = "Success"
 	else:
 		json_data["message"] = "Request Error"
@@ -815,12 +1032,19 @@ def syncFolders():
 # Setting Folder
 @app.route('/user/settingFolder', methods=['GET', 'POST'])
 def settingFolder():
+	"""
+	Plugin Only
+	/user/settingFolder path
+	Update setting folder info
+	"""
 	model = authorityModel.AuthorityModel()
 
 
 	if request.method == "POST":
+		# not create
 		pass
 	elif request.method == "GET":
+		# Show info
 		form = FlaskForm()
 		group_folder_id = request.args.get('group_folder_id')
 		data, message = model.getFolderAuthority(group_folder_id)
@@ -838,69 +1062,6 @@ def settingFolder():
 		html = render_template('userFolderSetting.html', form=form, data=data, state_bit=state_bit)
 
 	return html
-
-def create_new_json_file(group_folder_id, group_folder_name):
-	json_data = {
-		"bookmark_id": group_folder_id,
-		"bookmark_name": group_folder_name,
-		"bookmark":{}
-	}
-
-	folder_path = "json_data\\" + str(group_folder_id) + "_" + group_folder_name + ".json"
-	with open(folder_path, 'w') as f:
-		json.dump(json_data, f, ensure_ascii=False)
-	return
-
-def create_update_json_file(json_bookmark, select_data):
-	json_data = {
-		"bookmark_id": select_data[0][0],
-		"bookmark_name": select_data[0][1],
-		"bookmark" : {}
-	}
-	for value in json_bookmark["bookmark"]:
-		json_data["bookmark"][str(value)] = json_bookmark["bookmark"][str(value)]
-
-	folder_path = "json_data\\" + select_data[0][3] + ".json"
-	with open(folder_path, 'w') as f:
-		json.dump(json_data, f, ensure_ascii=False)
-
-	return
-
-def input_json_file(group_folder_path):
-	folder_path = "json_data\\" + group_folder_path + ".json"
-	f = open(folder_path, 'r')
-	json_data = json.load(f)
-	return json_data
-
-def check_group_folder_name(group_folder_name):
-	result = True
-	if group_folder_name == "":
-		result = False
-
-	if len(group_folder_name) > 20:
-		result = False
-
-	if r"[^.!#$%&'*+\/=?^_`{|}~-]" in group_folder_name:
-		result = False
-
-	return result
-
-# # Create User
-# @app.route('/plugin/createUser', methods=['GET','POST'])
-# def pluginCreateUser():
-# 	model = userModel.UserModel()
-# 	form = pluginUserCreateValidate.PluginUserCreateValidate()
-
-# 	if request.method == "POST":
-# 		if form.validate_on_submit():
-# 			message, form.user_id.data = model.insertUser(form)
-
-# 			if message != 'Complate':
-# 				pass
-# 			else:
-# 				return redirect(url_for("loginUser"))
-# 	else:
-# 		return render_template('')
 
 if __name__ == "__main__":
 	app.run(host='127.0.0.1', port=443, ssl_context=('openssl/cert.crt', 'openssl/server_secret.key'), threaded=True, debug=True)

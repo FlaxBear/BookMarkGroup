@@ -1,9 +1,21 @@
+# -*- coding: utf-8 -*-
+"""This module contains basic processing for AdminUser database."""
 import hashlib, binascii
 from module import baseDB
 import numberingModel
 
 class AdminUserModel(baseDB.BaseDB):
+	"""
+	Connect to the database and process AdminUser database
+
+	Attributes
+	----------
+	table_info : dict
+		Table name and param info
+
+	"""
 	def __init__(self):
+		"""Set attributes."""
 		super().__init__()
 		self.table_info = {
 			"table": "admin_user",
@@ -18,6 +30,21 @@ class AdminUserModel(baseDB.BaseDB):
 		}
 
 	def selectAdminUser(self, form):
+		"""
+		Execute the SELECT statement.
+
+		Parameters
+		----------
+		form : AdminUserEditUpdValidate
+			form data
+
+		Returns
+		----------
+		select_data : list
+			All data in the AdminUser database
+		message : str
+			'Complate' message or Error message
+		"""
 		select_value = self.createRequestSqlValue(form, self.table_info, "primary_key")
 		select_sql = self.createSelectSql(self.table_info)
 
@@ -28,10 +55,27 @@ class AdminUserModel(baseDB.BaseDB):
 		return select_data, message
 
 	def insertAdminUser(self, form):
+		"""
+		Execute the INSERT statement.
+
+		Parameters
+		----------
+		form : AdminUserEditUpdValidate
+			form data
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+		insert_value["admin_user_id"] : num
+			admin_user_id
+
+		"""
 		numbering_class = numberingModel.NumberingModel()
 
 		insert_value = self.createRequestSqlValue(form, self.table_info, "insert")
 
+		# Create data
 		insert_value["admin_user_id"], message = numbering_class.getNextValue("admin_user_id")
 		insert_value["create_time"] = self.create_time()
 		insert_value["update_time"] = self.create_time()
@@ -46,6 +90,20 @@ class AdminUserModel(baseDB.BaseDB):
 		return message, insert_value["admin_user_id"]
 
 	def updateAdminUser(self, form):
+		"""
+		Execute the UPDATE statement.
+
+		Parameters
+		----------
+		form : AdminUserEditUpdValidate
+			form data
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+
+		"""
 		update_value = self.createRequestSqlValue(form, self.table_info, "update")
 		update_value["update_time"] = self.create_time()
 
@@ -65,6 +123,20 @@ class AdminUserModel(baseDB.BaseDB):
 		return message
 
 	def delateAdminUser(self, form):
+		"""
+		Execute the DELATE statement.
+
+		Parameters
+		----------
+		form : AdminUserEditUpdValidate
+			form data
+
+		Returns
+		----------
+		message : str
+			'Complate' message or Error message
+
+		"""
 		delate_value = self.createRequestSqlValue(form, self.table_info, "primary_key")
 		delate_sql = self.createDelateSql(self.table_info)
 
@@ -75,6 +147,17 @@ class AdminUserModel(baseDB.BaseDB):
 		return message
 
 	def getList(self):
+		"""
+		Get adminUser data list
+
+		Returns
+		----------
+		select_data : list
+			adminUser data list
+		message : str
+			'Complate' message or Error message
+
+		"""
 		select_sql = """
 					 SELECT admin_user_id, admin_user_name, admin_user_login_id, admin_user_password
 					 , create_time, update_time
@@ -87,6 +170,21 @@ class AdminUserModel(baseDB.BaseDB):
 		return select_data, message
 
 	def getLoginData(self, admin_user_login_id):
+		"""
+		Get one data based on admin_user_login_id
+
+		Parameters
+		----------
+		admin_user_login_id : int
+			admin_user_login_id data
+
+		Returns
+		----------
+		select_data : list
+			One adminUser data
+		message : str
+			'Complate' message or Error message
+		"""
 		select_sql = "SELECT admin_user_id, admin_user_login_id, admin_user_password FROM " + self.table_info["table"] + " WHERE admin_user_login_id=%(admin_user_login_id)s"
 		sql_value = {
 			"admin_user_login_id": admin_user_login_id
@@ -99,6 +197,23 @@ class AdminUserModel(baseDB.BaseDB):
 		return select_data, message
 
 	def createUpdateSql(self, table_info, password_state):
+		"""
+		Over write
+		Create UPDATE statement.
+
+		Parameters
+		----------
+		table_info : dict
+			Table information
+
+		password_state : bool
+			Whether the password has been changed
+
+		Returns
+		----------
+		sql : str
+			UPDATE statement
+		"""
 		sql_where = ""
 		sql_value = ""
 
@@ -119,6 +234,22 @@ class AdminUserModel(baseDB.BaseDB):
 		return sql
 
 	def safty_password(self, id, password):
+		"""
+		Generate encrypted password
+
+		Parameters
+		----------
+		id : int
+			admin_user_id
+		password : str
+			password
+
+		Returns
+		----------
+		Encrypted password : str
+			Encrypted password
+
+		"""
 		hash = hashlib.sha256()
 		hash.update(str(id).encode("UTF-8") + password.encode("UTF-8"))
 		return hash.hexdigest()

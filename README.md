@@ -6,20 +6,31 @@ Share Web bookmarks within group
 When you want to share bookmarks and favorites in the browser with workplaces, teams, friends, etc.,
 you can send a URL by e-mail or share it without showing the screen by using WebBookMark.
 
-## Demo
-
-## VS. 
-
 ## Requirement
+- Server
+	- Python3(Anaconda)
+		- flask
+		- flask_login
+		- flask_wtf
+	- MySQL
+- Plugin
+	- firefox
+	- Chome
+		- Vivaldi
 
 ## Usage
+- Server
+	- Not created
+- Plugin
+	- Not created
 
 ## Install
-
-## Contribution
-
-## Licence
+- Server
+	- Not created
+- Plugin
+	- Not created
 
 ## Authors
 [FlaxBear](https://github.com/FlaxBear)
-E-mail:flaxbear.github@gmail.com
+
+E-mail:<flaxbear.github@gmail.com>
