@@ -1,21 +1,49 @@
 # -*- coding: utf-8 -*-
+"""This module is used when updateing the user edit page"""
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, StringField, TimeField, ValidationError
 
 class UserEditUpdValidate(FlaskForm):
-	state = HiddenField()
-	user_id = HiddenField()
-	user_name = StringField()
-	user_mail_address = StringField()
-	user_password = StringField()
-	create_time = TimeField()
-	update_time = TimeField()
+	"""
+	Specify a validation rule for each item and execute
+
+	Functions
+	----------
+	validate_state :
+		Function that performs validation on state
+
+	validate_user_id :
+		Function that performs validation on user_id
+
+	validate_user_name :
+		Function that performs validation on user_name
+
+	validate_user_mail_address :
+		Function that performs validation on user_mail_address
+
+	validate_user_password:
+		Function that performs validation on user_password
+	"""
 
 	def validate_state(self, state):
+		"""
+		Perform validation on
+
+		Parameters
+		----------
+		: str
+		"""
 		if state.data == "":
 			raise ValidationError("")
 
 	def validate_user_id(self, user_id):
+		"""
+		Perform validation on user_id
+
+		Parameters
+		----------
+		user_id : str
+		"""
 		if user_id.data == "":
 			raise ValidationError("ユーザIDが選択されていません")
 		if user_id.data != "0":
@@ -23,6 +51,13 @@ class UserEditUpdValidate(FlaskForm):
 			# 存在チェック
 
 	def validate_user_name(self, user_name):
+		"""
+		Perform validation on user_name
+
+		Parameters
+		----------
+		user_name : str
+		"""
 		if user_name.data == "":
 			raise ValidationError("ユーザ名を入力して下さい")
 		if len(user_name.data) > 20:
@@ -31,6 +66,13 @@ class UserEditUpdValidate(FlaskForm):
 			raise ValidationError(r"ユーザ名に.!#$%&'*+\/=?^_`{|}~-は含められません。")
 
 	def validate_user_mail_address(self, user_mail_address):
+		"""
+		Perform validation on user_mail_address
+
+		Parameters
+		----------
+		user_mail_address : str
+		"""
 		if user_mail_address.data == "":
 			raise ValidationError("メールアドレスを入力してください")
 
@@ -43,6 +85,13 @@ class UserEditUpdValidate(FlaskForm):
 		# メールアドレスの重複チェック
 
 	def validate_user_password(self, user_password):
+		"""
+		Perform validation on user_password
+
+		Parameters
+		----------
+		user_password : str
+		"""
 		if user_password.data == "":
 			raise ValidationError("パスワードを入力してください")
 

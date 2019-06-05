@@ -1,14 +1,29 @@
 # -*- coding: utf-8 -*-
+"""This module is used when displaying the Admin User edit page"""
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, ValidationError
 
 class AdminUserEditShowValidate(FlaskForm):
-	state = HiddenField()
-	admin_user_id = HiddenField()
+	"""
+	Specify a validation rule for each item and execute
 
+	Functions
+	----------
+	validate_admin_user_id :
+		Function that performs validation on admin_user_id
+
+	"""
 	def validate_admin_user_id(self, admin_user_id):
+		"""
+		Perform validation on admin_user_id
+
+		Parameters
+		----------
+		admin_user_id : str
+			admin_user_id data
+		"""
 		if admin_user_id.data == "":
-			raise ValidationError("管理者ユーザIDが選択されていません")
+			raise ValidationError("Administrator user ID is not selected")
 		if admin_user_id != "0":
 			pass
 			#存在チェック
