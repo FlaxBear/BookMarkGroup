@@ -3,6 +3,8 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, StringField, TimeField, ValidationError
 
+from Model import groupFolderModel
+
 class GroupFolderEditShowValidate(FlaskForm):
 	"""
 	Specify a validation rule for each item and execute
@@ -41,5 +43,7 @@ class GroupFolderEditShowValidate(FlaskForm):
 		if group_folder_id.data == "":
 			raise ValidationError("Group folder ID is not selected")
 		if group_folder_id.data != "0":
-			pass
-			# 存在チェック
+			model = groupFolderModel.GroupFolderModel()
+			data = model.getData(group_folder_id.data)
+			if data == []:
+				raise ValidationError("Not Found group folder data")

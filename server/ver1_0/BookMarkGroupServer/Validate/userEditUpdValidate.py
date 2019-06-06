@@ -3,6 +3,8 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, StringField, TimeField, ValidationError
 
+from Model import userModel
+
 class UserEditUpdValidate(FlaskForm):
 	"""
 	Specify a validation rule for each item and execute
@@ -47,8 +49,10 @@ class UserEditUpdValidate(FlaskForm):
 		if user_id.data == "":
 			raise ValidationError("ユーザIDが選択されていません")
 		if user_id.data != "0":
-			pass
-			# 存在チェック
+			model = userModel.UserModel()
+			data = model.getData(user_id.data)
+			if data == []:
+				raise ValidationError("Not Found user data")
 
 	def validate_user_name(self, user_name):
 		"""
@@ -82,7 +86,10 @@ class UserEditUpdValidate(FlaskForm):
 		if r"/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/" in user_mail_address.data:
 			raise ValidationError("メールアドレス形式の入力してください")
 
-		# メールアドレスの重複チェック
+		model = userModel.UserModel()
+		data = model.getLoginData(user_mail_address.data)
+		if data != []:
+			raise ValidationError("Already user data")
 
 	def validate_user_password(self, user_password):
 		"""

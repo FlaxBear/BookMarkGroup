@@ -169,6 +169,33 @@ class AdminUserModel(baseDB.BaseDB):
 
 		return select_data, message
 
+	def getData(self, admin_user_id):
+		"""
+		Get one data based on admin_user_id
+
+		Parameters
+		----------
+		admin_user_id : int
+			admin_user_id data
+
+		Returns
+		----------
+		select_data : list
+			One adminUser data
+		message : str
+			'Complate' message or Error message
+		"""
+		select_sql = "SELECT admin_user_id, admin_user_login_id, admin_user_password FROM " + self.table_info["table"] + " WHERE admin_user_id=%(admin_user_id)s"
+		sql_value = {
+			"admin_user_id": admin_user_id
+		}
+
+		self.startConnect()
+		select_data, message = self.selectExecute(select_sql, sql_value)
+		self.finishConnect()
+
+		return select_data, message
+
 	def getLoginData(self, admin_user_login_id):
 		"""
 		Get one data based on admin_user_login_id

@@ -2,6 +2,8 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, StringField, TimeField, ValidationError
 
+from Model import numberingModel
+
 class NumberingEditUpdValidate(FlaskForm):
 	"""
 	Specify a validation rule for each item and execute
@@ -27,8 +29,10 @@ class NumberingEditUpdValidate(FlaskForm):
 		if numbering_id.data == "":
 			raise ValidationError("Numbering ID not selected")
 		if numbering_id.data != "0":
-			pass
-			# 存在チェック
+			model = numberingModel.NumberingModel()
+			data = model.getData(numbering_id.data)
+			if data == []:
+				raise ValidationError("Not Found numbering data")
 
 	def validate_numbering_name(self, numbering_name):
 		"""

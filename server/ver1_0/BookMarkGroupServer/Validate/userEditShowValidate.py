@@ -3,6 +3,8 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, ValidationError
 
+from Model import userModel
+
 class UserEditShowValidate(FlaskForm):
 	"""
 	Specify a validation rule for each item and execute
@@ -25,5 +27,7 @@ class UserEditShowValidate(FlaskForm):
 		if user_id.data == "":
 			raise ValidationError("User ID not selected")
 		if user_id.data != "0":
-			pass
-			#存在チェック
+			model = userModel.UserModel()
+			data = model.getData(user_id.data)
+			if data == []:
+				raise ValidationError("Not Found user data")

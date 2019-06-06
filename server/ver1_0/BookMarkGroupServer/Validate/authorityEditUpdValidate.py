@@ -3,6 +3,8 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, StringField, IntegerField, TimeField, ValidationError
 
+from Model import userModel, groupFolderModel
+
 class AuthorityEditUpdValidate(FlaskForm):
 	"""
 	Specify a validation rule for each item and execute
@@ -43,8 +45,10 @@ class AuthorityEditUpdValidate(FlaskForm):
 		if user_id.data == "":
 			raise ValidationError("User ID not selected")
 		if user_id.data != "0":
-			pass
-			# 存在チェック
+			model = userModel.numberingModel()
+			data = model.getData(user_id.data)
+			if data == []:
+				raise ValidationError("Not Found user data")
 
 	def validate_group_folder_id(self, group_folder_id):
 		"""
@@ -58,5 +62,8 @@ class AuthorityEditUpdValidate(FlaskForm):
 		if group_folder_id.data == "":
 			raise ValidationError("Group folder ID is not selected")
 		if group_folder_id.data != "0":
-			pass
-			# 存在チェック
+			model = groupFolderModel.GroupFolderModel()
+			data = model.getData(group_folder_id.data)
+			if data == []:
+				raise ValidationError("Not Found group folder data")
+

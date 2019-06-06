@@ -3,6 +3,8 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, ValidationError
 
+from Model import adminUserModel
+
 class AdminUserEditShowValidate(FlaskForm):
 	"""
 	Specify a validation rule for each item and execute
@@ -24,6 +26,8 @@ class AdminUserEditShowValidate(FlaskForm):
 		"""
 		if admin_user_id.data == "":
 			raise ValidationError("Administrator user ID is not selected")
-		if admin_user_id != "0":
-			pass
-			#存在チェック
+		if admin_user_id.data != "0":
+			model = adminUserModel.AdminUserModel()
+			data = model.getData(admin_user_id.data)
+			if data == []:
+				raise ValidationError("Not Found administrator user data")

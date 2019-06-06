@@ -3,6 +3,8 @@
 from flask_wtf import FlaskForm
 from wtforms import HiddenField, StringField, TimeField, ValidationError
 
+from Model import adminUserModel
+
 class AdminUserEditUpdValidate(FlaskForm):
 	"""
 	Specify a validation rule for each item and execute
@@ -34,8 +36,10 @@ class AdminUserEditUpdValidate(FlaskForm):
 		if admin_user_id.data == "":
 			raise ValidationError("Administrator user ID is not selected")
 		if admin_user_id.data != "0":
-			pass
-			#存在チェック
+			model = adminUserModel.AdminUserModel()
+			data = model.getLoginData(admin_user_id.data)
+			if data == []:
+				raise ValidationError("Not Found administrator user data")
 
 	def validate_adminUser_name(self, admin_user_name):
 		"""
@@ -71,7 +75,11 @@ class AdminUserEditUpdValidate(FlaskForm):
 		if r"[^.!#$%&'*+\/=?^_`{|}~-]" in admin_user_login_id.data:
 			raise ValidationError(r"Login ID does not include.! # $% & '* + \ / =? ^ _ `{|} ~-.")
 
-		# ログインIDの重複チェック
+		if admin_user_login_id.data != "0":
+			model = adminUserModel.AdminUserModel()
+			data = model.getLoginData(admin_user_login_id.data)
+			if data == []:
+				raise ValidationError("Not Found administrator user data")
 
 	def validate_admin_user_password(self, admin_user_password):
 		"""

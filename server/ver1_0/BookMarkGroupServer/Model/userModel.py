@@ -225,6 +225,32 @@ class UserModel(baseDB.BaseDB):
 		sql = "UPDATE " + table_info["table"] + " SET " + sql_value + " WHERE " + sql_where
 		return sql
 
+	def getData(self, user_id):
+		"""
+		Get user's user_id, user_mail_address and user_id
+
+		Parameters
+		----------
+		user_id : str
+			user_id
+
+		Returns
+		----------
+		select_data : list
+			user's user_id, user_mail_address and user_password
+		message : str
+			'Complate' message or Error message
+		"""
+		select_sql = "SELECT user_id, user_mail_address, user_password FROM " + self.table_info["table"] + " WHERE user_id=%(user_id)s"
+		sql_value = {
+			"user_id": user_id
+		}
+		self.startConnect()
+		select_data, message = self.selectExecute(select_sql, sql_value)
+		self.finishConnect()
+
+		return select_data, message
+
 	def getLoginData(self, user_mail_address):
 		"""
 		For Plugin

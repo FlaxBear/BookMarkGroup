@@ -193,3 +193,29 @@ class NumberingModel(baseDB.BaseDB):
 		self.finishConnect()
 
 		return select_data, message
+
+	def getData(self, numbering_id):
+		"""
+		Get one data based on numbering_id
+
+		Parameters
+		----------
+		numbering_id : str
+			group_folder_id data
+
+		Returns
+		----------
+		select_data : list
+			One GroupFolder data
+		message : str
+			'Complate' message or Error message
+		"""
+		select_sql = "SELECT numbering_id FROM " + self.table_info["table"] + " WHERE numbering_id=%(numbering_id)s"
+		sql_value = {
+			"numbering_id": numbering_id
+		}
+		self.startConnect()
+		select_data, message = self.selectExecute(select_sql, sql_value)
+		self.finishConnect()
+
+		return select_data, message
